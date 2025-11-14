@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BackboneJobs - Support Staff Jobs India</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>🦴 BackboneJobs</h2>
+                <p class="tagline">The Backbone of Organizations</p>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#jobs">Find Jobs</a>
+                <a href="login.html">Login</a>
+                <a href="register.html" class="btn-primary">Get Started</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#features">Features</a>
+        <a href="#jobs">Find Jobs</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Get Started</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Find Support Staff Jobs Across India</h1>
+                <p class="hero-subtitle">Security Guards • Housekeeping • MST • Facility Management • Support Staff</p>
+                <p class="hero-description">The first dedicated platform for support staff recruitment. Connect directly with recruiters via WhatsApp.</p>
+                
+                <!-- Job Search -->
+                <div class="search-box">
+                    <input type="text" id="searchJob" placeholder="Job title (e.g., Security Guard)">
+                    <input type="text" id="searchLocation" placeholder="Location (e.g., Mumbai)">
+                    <button class="btn-search" onclick="searchJobs()">Search Jobs</button>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3 id="totalJobs">0</h3>
+                        <p>Active Jobs</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="totalCompanies">0</h3>
+                        <p>Companies</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="totalApplications">0</h3>
+                        <p>Applications</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose BackboneJobs?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Location-Based Search</h3>
+                    <p>Find jobs in your area with precise location filtering</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3>Direct Company Contact</h3>
+                    <p>Connect with recruiters directly via WhatsApp</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Easy Application</h3>
+                    <p>Apply with your CV in just a few clicks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track Applications</h3>
+                    <p>Monitor your application status in real-time</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Verified Companies</h3>
+                    <p>All recruiters are verified for your safety</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Specialized Platform</h3>
+                    <p>Dedicated to support staff positions only</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Popular Job Categories</h2>
+            <div class="category-grid">
+                <div class="category-card" onclick="filterByCategory('Security Guard')">
+                    <span class="category-icon">🛡️</span>
+                    <h4>Security Guard</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Housekeeping')">
+                    <span class="category-icon">🧹</span>
+                    <h4>Housekeeping</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('MST')">
+                    <span class="category-icon">🔧</span>
+                    <h4>MST Staff</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Facility Management')">
+                    <span class="category-icon">🏢</span>
+                    <h4>Facility Management</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Helper')">
+                    <span class="category-icon">👷</span>
+                    <h4>Helper</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Driver')">
+                    <span class="category-icon">🚗</span>
+                    <h4>Driver</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Jobs -->
+    <section id="jobs" class="jobs">
+        <div class="container">
+            <h2 class="section-title">Recent Job Openings</h2>
+            <div id="jobsList" class="jobs-grid">
+                <!-- Jobs will be loaded dynamically -->
+            </div>
+            <div class="text-center">
+                <a href="jobs.html" class="btn-primary">View All Jobs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Find Your Next Opportunity?</h2>
+            <p>Join thousands of support staff professionals finding their dream jobs</p>
+            <div class="cta-buttons">
+                <a href="register.html" class="btn-primary btn-large">Register as Job Seeker</a>
+                <a href="employer-register.html" class="btn-secondary btn-large">Post a Job</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BackboneJobs</h3>
+                    <p>Empowering support staff across India</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <a href="employer-register.html">Post a Job</a>
+                    <a href="employer-login.html">Employer Login</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BackboneJobs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

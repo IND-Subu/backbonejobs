@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuBtn">
+                        <span id="userName">User</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="profile.html">My Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item active">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-applications.html" class="menu-item">
+                    <span class="menu-icon">📝</span>
+                    <span>My Applications</span>
+                </a>
+                <a href="saved-jobs.html" class="menu-item">
+                    <span class="menu-icon">❤️</span>
+                    <span>Saved Jobs</span>
+                </a>
+                <a href="job-alerts.html" class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <span>Job Alerts</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Welcome back, <span id="userNameDisplay">User</span>!</h1>
+                    <p>Track your job applications and discover new opportunities</p>
+                </div>
+                <a href="jobs.html" class="btn-primary">Browse Jobs</a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #3b82f6;">📝</div>
+                    <div class="stat-content">
+                        <h3 id="totalApplications">0</h3>
+                        <p>Total Applications</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #10b981;">✅</div>
+                    <div class="stat-content">
+                        <h3 id="shortlisted">0</h3>
+                        <p>Shortlisted</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f59e0b;">⏳</div>
+                    <div class="stat-content">
+                        <h3 id="pending">0</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ef4444;">❌</div>
+                    <div class="stat-content">
+                        <h3 id="rejected">0</h3>
+                        <p>Rejected</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Applications</h2>
+                    <a href="my-applications.html" class="link">View All →</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                    Loading applications...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recommended Jobs -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recommended Jobs</h2>
+                    <a href="jobs.html" class="link">View All →</a>
+                </div>
+                <div id="recommendedJobs" class="jobs-grid">
+                    <!-- Jobs will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Profile Completion -->
+            <div class="dashboard-section">
+                <div class="completion-card">
+                    <div>
+                        <h3>Complete Your Profile</h3>
+                        <p>Complete your profile to increase your chances of getting hired</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="profileProgress" style="width: 60%"></div>
+                        </div>
+                        <p class="progress-text"><span id="profilePercentage">60</span>% Complete</p>
+                    </div>
+                    <a href="profile.html" class="btn-secondary">Update Profile</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

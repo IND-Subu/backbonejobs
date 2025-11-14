@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/jobs.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="jobs.html" class="active">Jobs</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html">Login</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Find Your Perfect Job</h1>
+            <p>Browse through <span id="totalJobsCount">0</span> active job opportunities</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="jobs-container">
+        <div class="container">
+            <div class="jobs-layout">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="filter-header">
+                        <h3>Filters</h3>
+                        <button class="btn-clear" onclick="clearFilters()">Clear All</button>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="filter-section">
+                        <label>Search Keywords</label>
+                        <input type="text" id="filterKeywords" placeholder="Job title, company..." onkeyup="applyFilters()">
+                    </div>
+
+                    <!-- Location -->
+                    <div class="filter-section">
+                        <label>Location</label>
+                        <input type="text" id="filterLocation" placeholder="City, State..." onkeyup="applyFilters()">
+                    </div>
+
+                    <!-- Category -->
+                    <div class="filter-section">
+                        <label>Job Category</label>
+                        <select id="filterCategory" onchange="applyFilters()">
+                            <option value="">All Categories</option>
+                            <option value="Security Guard">Security Guard</option>
+                            <option value="Housekeeping">Housekeeping</option>
+                            <option value="MST">MST</option>
+                            <option value="Facility Management">Facility Management</option>
+                            <option value="Helper">Helper</option>
+                            <option value="Driver">Driver</option>
+                            <option value="Office Boy">Office Boy</option>
+                            <option value="Pantry Staff">Pantry Staff</option>
+                        </select>
+                    </div>
+
+                    <!-- Job Type -->
+                    <div class="filter-section">
+                        <label>Job Type</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Full-Time" onchange="applyFilters()">
+                                <span>Full-Time</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Part-Time" onchange="applyFilters()">
+                                <span>Part-Time</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Contract" onchange="applyFilters()">
+                                <span>Contract</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Temporary" onchange="applyFilters()">
+                                <span>Temporary</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Salary Range -->
+                    <div class="filter-section">
+                        <label>Minimum Salary (₹)</label>
+                        <select id="filterSalary" onchange="applyFilters()">
+                            <option value="">Any</option>
+                            <option value="10000">10,000+</option>
+                            <option value="15000">15,000+</option>
+                            <option value="20000">20,000+</option>
+                            <option value="25000">25,000+</option>
+                            <option value="30000">30,000+</option>
+                            <option value="40000">40,000+</option>
+                            <option value="50000">50,000+</option>
+                        </select>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="filter-section">
+                        <label>Experience Level</label>
+                        <select id="filterExperience" onchange="applyFilters()">
+                            <option value="">Any</option>
+                            <option value="Fresher">Fresher</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="3-5 years">3-5 years</option>
+                            <option value="5+ years">5+ years</option>
+                        </select>
+                    </div>
+
+                    <!-- Posted Date -->
+                    <div class="filter-section">
+                        <label>Posted Within</label>
+                        <select id="filterPosted" onchange="applyFilters()">
+                            <option value="">Any time</option>
+                            <option value="1">Last 24 hours</option>
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <!-- Jobs List -->
+                <main class="jobs-main">
+                    <!-- Sort & View Options -->
+                    <div class="jobs-toolbar">
+                        <div class="results-info">
+                            <span id="resultsCount">Loading...</span>
+                        </div>
+                        <div class="sort-options">
+                            <label>Sort by:</label>
+                            <select id="sortBy" onchange="applyFilters()">
+                                <option value="date_desc">Newest First</option>
+                                <option value="date_asc">Oldest First</option>
+                                <option value="salary_desc">Highest Salary</option>
+                                <option value="salary_asc">Lowest Salary</option>
+                                <option value="company_asc">Company (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading jobs...</p>
+                    </div>
+
+                    <!-- Jobs Grid -->
+                    <div id="jobsGrid" class="jobs-grid" style="display: none;">
+                        <!-- Jobs will be loaded dynamically -->
+                    </div>
+
+                    <!-- No Results -->
+                    <div id="noResults" class="no-results" style="display: none;">
+                        <div class="no-results-icon">🔍</div>
+                        <h3>No jobs found</h3>
+                        <p>Try adjusting your filters or search criteria</p>
+                        <button class="btn-primary" onclick="clearFilters()">Clear Filters</button>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination" class="pagination" style="display: none;">
+                        <!-- Pagination will be generated dynamically -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BackboneJobs</h3>
+                    <p>Empowering support staff across India</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <a href="employer-register.html">Post a Job</a>
+                    <a href="employer-login.html">Employer Login</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BackboneJobs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/jobs.js"></script>
+</body>
+</html>
