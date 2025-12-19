@@ -151,7 +151,7 @@
 .content-text {
     color: var(--text-secondary);
     line-height: 1.8;
-    white-space: pre-wrap;
+    /*white-space: pre-wrap;*/
 }
 
 .content-text ul,

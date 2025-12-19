@@ -1,0 +1,401 @@
+<?php
+/**
+ * SEO-Friendly Job Details Page with Server-Side Rendering
+ * 
+ * This page renders job content on the server first, then enhances with JavaScript.
+ * Googlebot sees complete HTML immediately, users get interactive experience.
+ * 
+ * IMPORTANT: Rename your current job-details.html to job-details-old.html
+ * Then rename this file to job-details.php
+ */
+
+require_once 'api/config.php';
+
+// Get job ID from URL
+$jobId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Initialize variables
+$job = null;
+$error = null;
+$jobJson = null;
+
+// Fetch job data on server-side
+if ($jobId > 0) {
+    $db = Database::getInstance();
+    
+    // Update view count
+    $updateStmt = $db->prepare("UPDATE jobs SET views = views + 1 WHERE id = ?");
+    $updateStmt->bind_param('i', $jobId);
+    $updateStmt->execute();
+    $updateStmt->close();
+    
+    // Fetch job details
+    $query = "SELECT j.*, c.category_name, e.company_name, e.whatsapp_number,
+              e.company_logo, e.company_description, e.is_verified
+              FROM jobs j
+              LEFT JOIN job_categories c ON j.category_id = c.id
+              LEFT JOIN employers e ON j.employer_id = e.id
+              WHERE j.id = ? AND j.status = 'Active'";
+    
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('i', $jobId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $job = $result->fetch_assoc();
+        $jobJson = json_encode($job);
+    } else {
+        $error = "Job not found or no longer available";
+    }
+    
+    $stmt->close();
+} else {
+    $error = "Invalid job ID";
+}
+
+// Helper function to escape HTML
+function e($text) {
+    return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
+}
+
+// Helper function to format salary
+function formatSalary($amount) {
+    if ($amount >= 100000) {
+        return number_format($amount / 100000, 1) . 'L';
+    } else if ($amount >= 1000) {
+        return number_format($amount / 1000, 1) . 'K';
+    }
+    return number_format($amount);
+}
+
+// Helper function to get time ago
+function timeAgo($datetime) {
+    $timestamp = strtotime($datetime);
+    $diff = time() - $timestamp;
+    
+    if ($diff < 3600) {
+        $mins = floor($diff / 60);
+        return $mins <= 1 ? '1 minute ago' : $mins . ' minutes ago';
+    } elseif ($diff < 86400) {
+        $hours = floor($diff / 3600);
+        return $hours == 1 ? '1 hour ago' : $hours . ' hours ago';
+    } elseif ($diff < 604800) {
+        $days = floor($diff / 86400);
+        return $days == 1 ? '1 day ago' : $days . ' days ago';
+    } else {
+        return date('M d, Y', $timestamp);
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <?php if ($job): ?>
+        <!-- SEO Meta Tags with Actual Data -->
+        <title><?php echo e($job['title']); ?> at <?php echo e($job['company_name']); ?> | BackboneJobs</title>
+        <meta name="description" content="<?php echo e(substr($job['description'], 0, 160)); ?>">
+        <meta name="keywords" content="<?php echo e($job['title']); ?>, <?php echo e($job['category_name']); ?>, <?php echo e($job['location']); ?>, Jobs in India">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://www.backbonejobs.xyz/job-details.php?id=<?php echo $jobId; ?>">
+        <meta property="og:title" content="<?php echo e($job['title']); ?> at <?php echo e($job['company_name']); ?>">
+        <meta property="og:description" content="<?php echo e(substr($job['description'], 0, 160)); ?>">
+        
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://www.backbonejobs.xyz/job-details.php?id=<?php echo $jobId; ?>">
+        <meta property="twitter:title" content="<?php echo e($job['title']); ?>">
+        <meta property="twitter:description" content="<?php echo e(substr($job['description'], 0, 160)); ?>">
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://www.backbonejobs.xyz/job-details.php?id=<?php echo $jobId; ?>">
+        
+        <!-- JobPosting Structured Data (Schema.org) -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org/",
+            "@type": "JobPosting",
+            "title": "<?php echo e($job['title']); ?>",
+            "description": "<?php echo e($job['description']); ?>",
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "BackboneJobs",
+                "value": "<?php echo $jobId; ?>"
+            },
+            "datePosted": "<?php echo date('c', strtotime($job['posted_date'])); ?>",
+            <?php if ($job['application_deadline']): ?>
+            "validThrough": "<?php echo date('c', strtotime($job['application_deadline'])); ?>",
+            <?php endif; ?>
+            "employmentType": "<?php echo e($job['job_type']); ?>",
+            "hiringOrganization": {
+                "@type": "Organization",
+                "name": "<?php echo e($job['company_name']); ?>",
+                "sameAs": "https://www.backbonejobs.xyz",
+                "logo": "<?php echo $job['company_logo'] ? e($job['company_logo']) : 'https://www.backbonejobs.xyz/logo.png'; ?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "<?php echo e($job['location']); ?>",
+                    "addressLocality": "<?php echo e($job['city'] ?: $job['location']); ?>",
+                    "addressRegion": "<?php echo e($job['state']); ?>",
+                    "postalCode": "<?php echo e($job['pincode'] ?? ''); ?>",
+                    "addressCountry": "IN"
+                }
+            },
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "INR",
+                "value": {
+                    "@type": "QuantitativeValue",
+                    "minValue": <?php echo $job['salary_min']; ?>,
+                    "maxValue": <?php echo $job['salary_max']; ?>,
+                    "unitText": "MONTH"
+                }
+            },
+            "experienceRequirements": {
+                "@type": "OccupationalExperienceRequirements",
+                "monthsOfExperience": "<?php echo e($job['experience_required']); ?>"
+            }
+        }
+        </script>
+    <?php else: ?>
+        <title>Job Not Found | BackboneJobs</title>
+        <meta name="robots" content="noindex, nofollow">
+    <?php endif; ?>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/job-details.css">
+</head>
+<body>
+    <!-- Navigation (keep your existing nav) -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html">🦴 BackboneJobs</a>
+            </div>
+            <div class="nav-links">
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <?php if ($job): ?>
+        <!-- Job Content (Server-Rendered for SEO) -->
+        <div class="job-details-container">
+            <div class="container">
+                <!-- Job Header -->
+                <div class="job-header">
+                    <div class="company-logo">
+                        <?php if ($job['company_logo']): ?>
+                            <img src="<?php echo e($job['company_logo']); ?>" alt="<?php echo e($job['company_name']); ?>">
+                        <?php else: ?>
+                            <div class="logo-placeholder">🏢</div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="job-title-section">
+                        <h1><?php echo e($job['title']); ?></h1>
+                        <div class="company-info">
+                            <span class="company-name"><?php echo e($job['company_name']); ?></span>
+                            <?php if ($job['is_verified']): ?>
+                                <span class="verified-badge">✓ Verified</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="job-meta">
+                            <span>📍 <?php echo e($job['location']); ?></span>
+                            <span>💼 <?php echo e($job['job_type']); ?></span>
+                            <span>👤 <?php echo e($job['experience_required']); ?></span>
+                            <span>⏰ <?php echo timeAgo($job['posted_date']); ?></span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-actions">
+                        <button class="btn-primary" onclick="applyNow()">Apply Now</button>
+                        <button class="btn-icon" onclick="saveJob()">❤️</button>
+                        <button class="btn-icon" onclick="shareJob()">🔗</button>
+                    </div>
+                </div>
+
+                <!-- Job Details Grid -->
+                <div class="job-content-grid">
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <!-- Salary -->
+                        <div class="info-card">
+                            <h3>💰 Salary Range</h3>
+                            <p class="salary">
+                                ₹<?php echo formatSalary($job['salary_min']); ?> - ₹<?php echo formatSalary($job['salary_max']); ?> per month
+                                <?php if ($job['salary_negotiable']): ?>
+                                    <span class="negotiable">Negotiable</span>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="info-card">
+                            <h3>📋 Job Description</h3>
+                            <div class="description">
+                                <?php echo nl2br(e($job['description'])); ?>
+                            </div>
+                        </div>
+
+                        <?php if ($job['requirements']): ?>
+                        <div class="info-card">
+                            <h3>✅ Requirements</h3>
+                            <div class="requirements">
+                                <?php echo nl2br(e($job['requirements'])); ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if ($job['responsibilities']): ?>
+                        <div class="info-card">
+                            <h3>🎯 Responsibilities</h3>
+                            <div class="responsibilities">
+                                <?php echo nl2br(e($job['responsibilities'])); ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if ($job['benefits']): ?>
+                        <div class="info-card">
+                            <h3>🎁 Benefits</h3>
+                            <div class="benefits">
+                                <?php echo nl2br(e($job['benefits'])); ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="sidebar">
+                        <!-- Quick Info -->
+                        <div class="info-card">
+                            <h3>📌 Quick Info</h3>
+                            <div class="quick-info">
+                                <div class="info-item">
+                                    <strong>Category:</strong>
+                                    <span><?php echo e($job['category_name']); ?></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Job Type:</strong>
+                                    <span><?php echo e($job['job_type']); ?></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Experience:</strong>
+                                    <span><?php echo e($job['experience_required']); ?></span>
+                                </div>
+                                <?php if ($job['education_required']): ?>
+                                <div class="info-item">
+                                    <strong>Education:</strong>
+                                    <span><?php echo e($job['education_required']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <div class="info-item">
+                                    <strong>Vacancies:</strong>
+                                    <span><?php echo $job['vacancies']; ?> positions</span>
+                                </div>
+                                <?php if ($job['application_deadline']): ?>
+                                <div class="info-item">
+                                    <strong>Deadline:</strong>
+                                    <span><?php echo date('M d, Y', strtotime($job['application_deadline'])); ?></span>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Contact -->
+                        <div class="info-card">
+                            <h3>📞 Contact Information</h3>
+                            <div class="contact-info">
+                                <?php if ($job['contact_email']): ?>
+                                <p>📧 <?php echo e($job['contact_email']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($job['contact_phone']): ?>
+                                <p>📱 <?php echo e($job['contact_phone']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($job['whatsapp_number']): ?>
+                                <p>💬 <?php echo e($job['whatsapp_number']); ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Apply Button (Fixed) -->
+                        <button class="btn-primary btn-apply-sticky" onclick="applyNow()">
+                            Apply for this Job
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden data for JavaScript enhancement -->
+        <script>
+            // Make job data available for JavaScript
+            window.JOB_DATA = <?php echo $jobJson; ?>;
+            window.JOB_ID = <?php echo $jobId; ?>;
+        </script>
+
+    <?php else: ?>
+        <!-- Error State -->
+        <div class="error-container">
+            <div class="container">
+                <h1>😔 Job Not Found</h1>
+                <p><?php echo e($error); ?></p>
+                <a href="jobs.html" class="btn-primary">Browse All Jobs</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- JavaScript Enhancement (Progressive Enhancement) -->
+    <script src="js/main.js"></script>
+    <script>
+        // These functions work with pre-rendered content
+        function applyNow() {
+            <?php if ($job): ?>
+            const isLoggedIn = localStorage.getItem('user_token');
+            if (!isLoggedIn) {
+                alert('Please login to apply for jobs');
+                window.location.href = 'login.html?redirect=job-details.php?id=<?php echo $jobId; ?>';
+            } else {
+                window.location.href = 'apply.html?job_id=<?php echo $jobId; ?>';
+            }
+            <?php endif; ?>
+        }
+
+        function saveJob() {
+            // Your save job logic
+            alert('Job saved! (implement your save logic)');
+        }
+
+        function shareJob() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url });
+            } else {
+                navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        // Track page view
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: '<?php echo e($job['title'] ?? 'Job Details'); ?>',
+                page_path: window.location.pathname + window.location.search
+            });
+        }
+    </script>
+</body>
+</html>

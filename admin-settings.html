@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .settings-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .settings-section h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text-primary);
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        .switch-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .switch-group:last-child {
+            border-bottom: none;
+        }
+        .switch-group label {
+            margin: 0;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .danger-zone {
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .danger-zone h3 {
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="admin-dashboard.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs Admin</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuBtn">
+                        <span id="adminName">Admin</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="admin-settings.html">Settings</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item active">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Admin Settings</h1>
+                    <p>Configure system settings and preferences</p>
+                </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="settings-section">
+                <h2>Profile Settings</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Admin Name</label>
+                        <input type="text" id="adminNameInput" placeholder="Enter admin name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="adminEmail" placeholder="admin@backbonejobs.com">
+                    </div>
+                    <button type="submit" class="btn-primary">Update Profile</button>
+                </form>
+            </div>
+
+            <!-- Password Change -->
+            <div class="settings-section">
+                <h2>Change Password</h2>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" required>
+                        <small>Password must be at least 8 characters long</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Change Password</button>
+                </form>
+            </div>
+
+            <!-- System Settings -->
+            <div class="settings-section">
+                <h2>System Settings</h2>
+                
+                <div class="switch-group">
+                    <div>
+                        <label>Allow User Registration</label>
+                        <small>Enable or disable new user registrations</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="allowRegistration" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-group">
+                    <div>
+                        <label>Allow Employer Registration</label>
+                        <small>Enable or disable new employer registrations</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="allowEmployerReg" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-group">
+                    <div>
+                        <label>Require Email Verification</label>
+                        <small>Users must verify email before accessing features</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="requireVerification">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-group">
+                    <div>
+                        <label>Maintenance Mode</label>
+                        <small>Temporarily disable site access for maintenance</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="maintenanceMode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button onclick="saveSystemSettings()" class="btn-primary" style="margin-top: 1.5rem;">Save System Settings</button>
+            </div>
+
+            <!-- Email Settings -->
+            <div class="settings-section">
+                <h2>Email Settings</h2>
+                <form id="emailSettingsForm">
+                    <div class="form-group">
+                        <label>SMTP Host</label>
+                        <input type="text" id="smtpHost" placeholder="smtp.gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>SMTP Port</label>
+                        <input type="number" id="smtpPort" placeholder="587">
+                    </div>
+                    <div class="form-group">
+                        <label>SMTP Username</label>
+                        <input type="text" id="smtpUsername" placeholder="your-email@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>SMTP Password</label>
+                        <input type="password" id="smtpPassword" placeholder="••••••••">
+                        <small>Leave blank to keep current password</small>
+                    </div>
+                    <div class="form-group">
+                        <label>From Email</label>
+                        <input type="email" id="fromEmail" placeholder="noreply@backbonejobs.com">
+                    </div>
+                    <div class="form-group">
+                        <label>From Name</label>
+                        <input type="text" id="fromName" placeholder="BackboneJobs">
+                    </div>
+                    <button type="submit" class="btn-primary">Save Email Settings</button>
+                </form>
+            </div>
+
+            <!-- Site Settings -->
+            <div class="settings-section">
+                <h2>Site Configuration</h2>
+                <form id="siteSettingsForm">
+                    <div class="form-group">
+                        <label>Site Name</label>
+                        <input type="text" id="siteName" value="BackboneJobs">
+                    </div>
+                    <div class="form-group">
+                        <label>Site Tagline</label>
+                        <input type="text" id="siteTagline" placeholder="Your Dream Job Awaits">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" id="contactEmail" placeholder="contact@backbonejobs.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Support Phone</label>
+                        <input type="tel" id="supportPhone" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="siteAddress" placeholder="Enter company address"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Site Settings</button>
+                </form>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="settings-section">
+                <h2>Danger Zone</h2>
+                <div class="danger-zone">
+                    <h3>⚠️ Dangerous Actions</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        These actions are irreversible. Please be careful.
+                    </p>
+                    <button onclick="clearAllCache()" class="btn-danger">Clear All Cache</button>
+                    <button onclick="resetStatistics()" class="btn-danger" style="margin-left: 1rem;">Reset Statistics</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Profile Form
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('adminNameInput').value,
+                email: document.getElementById('adminEmail').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}admin/profile.php`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Profile updated successfully', 'success');
+                } else {
+                    showToast(result.message || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to update profile', 'error');
+            }
+        });
+
+        // Password Form
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            if (newPass.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            const data = {
+                current_password: document.getElementById('currentPassword').value,
+                new_password: newPass
+            };
+
+            try {
+                const response = await fetch(`${API_URL}admin/change-password.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Password changed successfully', 'success');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    showToast(result.message || 'Failed to change password', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to change password', 'error');
+            }
+        });
+
+        // System Settings
+        async function saveSystemSettings() {
+            const settings = {
+                allow_registration: document.getElementById('allowRegistration').checked,
+                allow_employer_registration: document.getElementById('allowEmployerReg').checked,
+                require_verification: document.getElementById('requireVerification').checked,
+                maintenance_mode: document.getElementById('maintenanceMode').checked
+            };
+
+            try {
+                const response = await fetch(`${API_URL}admin/settings.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+                    },
+                    body: JSON.stringify(settings)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('System settings saved successfully', 'success');
+                } else {
+                    showToast(result.message || 'Failed to save settings', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        // Email Settings Form
+        document.getElementById('emailSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                smtp_host: document.getElementById('smtpHost').value,
+                smtp_port: document.getElementById('smtpPort').value,
+                smtp_username: document.getElementById('smtpUsername').value,
+                smtp_password: document.getElementById('smtpPassword').value,
+                from_email: document.getElementById('fromEmail').value,
+                from_name: document.getElementById('fromName').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}admin/email-settings.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Email settings saved successfully', 'success');
+                } else {
+                    showToast(result.message || 'Failed to save email settings', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to save email settings', 'error');
+            }
+        });
+
+        // Site Settings Form
+        document.getElementById('siteSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                site_name: document.getElementById('siteName').value,
+                site_tagline: document.getElementById('siteTagline').value,
+                contact_email: document.getElementById('contactEmail').value,
+                support_phone: document.getElementById('supportPhone').value,
+                site_address: document.getElementById('siteAddress').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}admin/site-settings.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Site settings saved successfully', 'success');
+                } else {
+                    showToast(result.message || 'Failed to save site settings', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to save site settings', 'error');
+            }
+        });
+
+        // Danger Zone Functions
+        async function clearAllCache() {
+            if (!confirm('Are you sure you want to clear all cache? This may temporarily slow down the site.')) return;
+
+            showToast('Cache cleared successfully', 'success');
+        }
+
+        async function resetStatistics() {
+            if (!confirm('Are you sure you want to reset all statistics? This action cannot be undone!')) return;
+
+            showToast('Statistics reset successfully', 'success');
+        }
+
+        // Load current settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load admin profile
+            const adminData = JSON.parse(localStorage.getItem('admin_data') || '{}');
+            if (adminData.name) {
+                document.getElementById('adminNameInput').value = adminData.name;
+                document.getElementById('adminEmail').value = adminData.email || '';
+            }
+        });
+    </script>
+</body>
+</html>

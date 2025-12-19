@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item active">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Reports & Analytics</h1>
+                    <p>Generate and view platform reports</p>
+                </div>
+                <select id="reportPeriod" onchange="loadReports()" class="form-select">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last Year</option>
+                </select>
+            </div>
+
+            <!-- Summary Statistics -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Summary Statistics</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #3b82f6;">👥</div>
+                        <div class="stat-content">
+                            <h3 id="newUsers">0</h3>
+                            <p>New Users</p>
+                            <small style="color: var(--text-secondary);">in selected period</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #10b981;">🏢</div>
+                        <div class="stat-content">
+                            <h3 id="newEmployers">0</h3>
+                            <p>New Employers</p>
+                            <small style="color: var(--text-secondary);">in selected period</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #f59e0b;">💼</div>
+                        <div class="stat-content">
+                            <h3 id="newJobs">0</h3>
+                            <p>Jobs Posted</p>
+                            <small style="color: var(--text-secondary);">in selected period</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #8b5cf6;">📨</div>
+                        <div class="stat-content">
+                            <h3 id="newApplications">0</h3>
+                            <p>Applications</p>
+                            <small style="color: var(--text-secondary);">in selected period</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Categories -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Top Job Categories</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Active Jobs</th>
+                                <th>Total Applications</th>
+                                <th>Avg. Applications per Job</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topCategoriesTable">
+                            <tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Application Status Breakdown -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Application Status Distribution</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div style="background: var(--surface); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 0.5rem;" id="pendingApps">0</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Pending</div>
+                    </div>
+                    <div style="background: var(--surface); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;" id="reviewedApps">0</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Reviewed</div>
+                    </div>
+                    <div style="background: var(--surface); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;" id="shortlistedApps">0</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Shortlisted</div>
+                    </div>
+                    <div style="background: var(--surface); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; color: #ef4444; margin-bottom: 0.5rem;" id="rejectedApps">0</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Rejected</div>
+                    </div>
+                    <div style="background: var(--surface); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; color: #8b5cf6; margin-bottom: 0.5rem;" id="hiredApps">0</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Hired</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Employers -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Most Active Employers</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Jobs Posted</th>
+                                <th>Total Applications</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topEmployersTable">
+                            <tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Export Reports</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <div class="quick-action-card" onclick="exportReport('users')">
+                        <span class="action-icon">👥</span>
+                        <h3>Export Users</h3>
+                        <p>Download user data as CSV</p>
+                    </div>
+                    <div class="quick-action-card" onclick="exportReport('employers')">
+                        <span class="action-icon">🏢</span>
+                        <h3>Export Employers</h3>
+                        <p>Download employer data as CSV</p>
+                    </div>
+                    <div class="quick-action-card" onclick="exportReport('jobs')">
+                        <span class="action-icon">💼</span>
+                        <h3>Export Jobs</h3>
+                        <p>Download job listings as CSV</p>
+                    </div>
+                    <div class="quick-action-card" onclick="exportReport('applications')">
+                        <span class="action-icon">📨</span>
+                        <h3>Export Applications</h3>
+                        <p>Download applications as CSV</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        async function loadReports() {
+            const days = document.getElementById('reportPeriod').value;
+            
+            try {
+                const response = await fetch(API_URL + `admin/reports.php?days=${days}`, {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayReports(data.reports);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to load reports', 'error');
+            }
+        }
+
+        function displayReports(reports) {
+            // Summary stats
+            document.getElementById('newUsers').textContent = reports.new_users || 0;
+            document.getElementById('newEmployers').textContent = reports.new_employers || 0;
+            document.getElementById('newJobs').textContent = reports.new_jobs || 0;
+            document.getElementById('newApplications').textContent = reports.new_applications || 0;
+
+            // Application status
+            const status = reports.application_status || {};
+            document.getElementById('pendingApps').textContent = status.Pending || 0;
+            document.getElementById('reviewedApps').textContent = status.Reviewed || 0;
+            document.getElementById('shortlistedApps').textContent = status.Shortlisted || 0;
+            document.getElementById('rejectedApps').textContent = status.Rejected || 0;
+            document.getElementById('hiredApps').textContent = status.Hired || 0;
+
+            // Top categories
+            const categoriesTable = document.getElementById('topCategoriesTable');
+            if (reports.top_categories && reports.top_categories.length > 0) {
+                categoriesTable.innerHTML = reports.top_categories.map(cat => `
+                    <tr>
+                        <td><strong>${escapeHtml(cat.category_name)}</strong></td>
+                        <td>${cat.job_count || 0}</td>
+                        <td>${cat.application_count || 0}</td>
+                        <td>${cat.avg_applications || 0}</td>
+                    </tr>
+                `).join('');
+            } else {
+                categoriesTable.innerHTML = '<tr><td colspan="4" style="text-align: center;">No data available</td></tr>';
+            }
+
+            // Top employers
+            const employersTable = document.getElementById('topEmployersTable');
+            if (reports.top_employers && reports.top_employers.length > 0) {
+                employersTable.innerHTML = reports.top_employers.map(emp => `
+                    <tr>
+                        <td><strong>${escapeHtml(emp.company_name)}</strong></td>
+                        <td>${emp.job_count || 0}</td>
+                        <td>${emp.application_count || 0}</td>
+                        <td><span class="status-badge status-${emp.is_verified == 1 ? 'hired' : 'pending'}">${emp.is_verified == 1 ? '✓ Verified' : 'Unverified'}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                employersTable.innerHTML = '<tr><td colspan="4" style="text-align: center;">No data available</td></tr>';
+            }
+        }
+
+        function exportReport(type) {
+            window.location.href = API_URL + 'admin/export.php?type=' + type + '&token=' + localStorage.getItem('user_token');
+            showToast('Export started...', 'info');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            loadReports();
+        });
+    </script>
+</body>
+</html>

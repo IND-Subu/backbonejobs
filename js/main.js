@@ -1,30 +1,6 @@
 // API Configuration
 const API_URL = 'api/';
 
-// Dark Mode Toggle
-const darkModeToggle = document.getElementById('darkModeToggle');
-const body = document.body;
-
-// Load dark mode preference
-if (localStorage.getItem('darkMode') === 'enabled') {
-    body.setAttribute('data-theme', 'dark');
-    if (darkModeToggle) darkModeToggle.textContent = '☀️';
-}
-
-if (darkModeToggle) {
-    darkModeToggle.addEventListener('click', () => {
-        if (body.getAttribute('data-theme') === 'dark') {
-            body.removeAttribute('data-theme');
-            localStorage.setItem('darkMode', 'disabled');
-            darkModeToggle.textContent = '🌙';
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            localStorage.setItem('darkMode', 'enabled');
-            darkModeToggle.textContent = '☀️';
-        }
-    });
-}
-
 // Mobile Menu Toggle
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
@@ -35,6 +11,20 @@ if (mobileMenuBtn) {
     });
 }
 
+// Auth Checking
+const userAuth = document.getElementById("userAuth");
+
+if (userAuth) {
+    if (checkAuth()) {
+        userAuth.textContent = "Logout";
+        userAuth.href = "#";
+        userAuth.onclick = () => { logout(); return false; };
+    } else {
+        userAuth.textContent = "Login";
+        userAuth.href = "login.html";
+    }
+}
+
 // Load Statistics
 async function loadStats() {
     try {
@@ -43,7 +33,7 @@ async function loadStats() {
         
         if (data.success) {
             if (document.getElementById('totalJobs')) {
-                animateCounter('totalJobs', data.stats.total_jobs);
+                animateCounter('totalJobs', data.stats.active_jobs);
             }
             if (document.getElementById('totalCompanies')) {
                 animateCounter('totalCompanies', data.stats.total_companies);
@@ -149,7 +139,7 @@ function filterByCategory(category) {
 
 // View Job Details
 function viewJob(jobId) {
-    window.location.href = `job-details.html?id=${jobId}`;
+    window.location.href = `job-details.php?id=${jobId}`;
 }
 
 // Apply for Job
@@ -158,7 +148,7 @@ function applyJob(jobId) {
     
     if (!isLoggedIn) {
         alert('Please login to apply for jobs');
-        window.location.href = `login.html?redirect=job-details.html?id=${jobId}`;
+        window.location.href = `login.html?redirect=job-details.php?id=${jobId}`;
     } else {
         window.location.href = `apply.html?job_id=${jobId}`;
     }

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        .about-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .about-hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .about-section {
+            padding: 4rem 0;
+        }
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .story-card {
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        .mission-vision-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .mvv-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .mvv-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+        .mvv-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .mvv-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .mvv-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        .difference-section {
+            background: var(--surface);
+            padding: 4rem 0;
+        }
+        .difference-list {
+            list-style: none;
+            padding: 0;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        .difference-item {
+            padding: 1.5rem;
+            background: var(--background);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            border-left: 3px solid var(--primary-color);
+        }
+        .difference-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        .difference-content h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .difference-content p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .stats-section {
+            background: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+        }
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        .team-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-white {
+            background: white;
+            color: var(--primary-color);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links"></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="about-hero">
+        <div class="container">
+            <h1>About BackboneJobs</h1>
+            <p>India's First Dedicated Job Portal for Support Staff - Because Every Job Matters</p>
+        </div>
+    </div>
+
+    <section class="about-section">
+        <div class="container about-content">
+            <div class="story-card">
+                <h2 style="color: var(--primary-color); margin-bottom: 1.5rem; font-size: 2rem;">Our Story</h2>
+                <p style="color: var(--text-secondary); line-height: 1.9; margin-bottom: 1rem;">
+                    BackboneJobs was born from a simple observation: While countless job portals exist for corporate and IT professionals, the hardworking support staff who form the backbone of every organization were being overlooked. Security guards ensuring our safety, housekeeping staff maintaining our spaces, drivers keeping us mobile, and facility managers ensuring smooth operations - they all deserved a dedicated platform.
+                </p>
+                <p style="color: var(--text-secondary); line-height: 1.9; margin-bottom: 1rem;">
+                    Founded in 2024, we set out to bridge this critical gap in India's job market. We recognized that these professionals face unique challenges: limited digital literacy, language barriers, and lack of access to quality job opportunities. Traditional job portals weren't designed with them in mind.
+                </p>
+                <p style="color: var(--text-secondary); line-height: 1.9;">
+                    Today, BackboneJobs is transforming how support staff find employment and how employers discover talent. We've simplified the application process, enabled direct communication via WhatsApp, and created a platform that respects the dignity and importance of every job role. Our mission is to ensure that every support staff professional in India has access to fair, transparent, and quality employment opportunities.
+                </p>
+            </div>
+
+            <div class="mission-vision-values">
+                <div class="mvv-card">
+                    <div class="mvv-icon">🎯</div>
+                    <h3>Our Mission</h3>
+                    <p>To provide a dedicated, accessible, and user-friendly platform that connects support staff with verified employers across India, ensuring dignity, transparency, and equal opportunities for all.</p>
+                </div>
+                <div class="mvv-card">
+                    <div class="mvv-icon">👁️</div>
+                    <h3>Our Vision</h3>
+                    <p>To become India's most trusted and comprehensive employment platform for support staff, transforming millions of lives by bridging the gap between talent and opportunity.</p>
+                </div>
+                <div class="mvv-card">
+                    <div class="mvv-icon">💪</div>
+                    <h3>Our Values</h3>
+                    <p>Dignity, Respect, Transparency, Inclusivity, Innovation, and Empowerment. We treat every job seeker with respect and every employer with professionalism.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="difference-section">
+        <div class="container">
+            <h2 style="text-align: center; color: var(--text-primary); margin-bottom: 3rem; font-size: 2rem;">What Makes Us Different</h2>
+            <ul class="difference-list">
+                <li class="difference-item">
+                    <span class="difference-icon">🎯</span>
+                    <div class="difference-content">
+                        <h4>Specialized Focus</h4>
+                        <p>Unlike generic job portals, we exclusively focus on support staff positions - from security guards to facility managers, ensuring relevant opportunities for every user.</p>
+                    </div>
+                </li>
+                <li class="difference-item">
+                    <span class="difference-icon">💬</span>
+                    <div class="difference-content">
+                        <h4>WhatsApp Integration</h4>
+                        <p>Direct communication with recruiters via WhatsApp - making the hiring process faster, easier, and more personal.</p>
+                    </div>
+                </li>
+                <li class="difference-item">
+                    <span class="difference-icon">✅</span>
+                    <div class="difference-content">
+                        <h4>Verified Employers</h4>
+                        <p>All companies are verified to ensure job seeker safety and prevent fraud. We conduct thorough background checks on every employer.</p>
+                    </div>
+                </li>
+                <li class="difference-item">
+                    <span class="difference-icon">📱</span>
+                    <div class="difference-content">
+                        <h4>Simple & User-Friendly</h4>
+                        <p>Designed for ease of use with minimal steps. No complicated forms or technical jargon - just straightforward job search and application.</p>
+                    </div>
+                </li>
+                <li class="difference-item">
+                    <span class="difference-icon">🔔</span>
+                    <div class="difference-content">
+                        <h4>Smart Job Alerts</h4>
+                        <p>Receive instant notifications about jobs matching your skills, location, and salary preferences - never miss an opportunity.</p>
+                    </div>
+                </li>
+                <li class="difference-item">
+                    <span class="difference-icon">🌐</span>
+                    <div class="difference-content">
+                        <h4>Pan-India Coverage</h4>
+                        <p>From metros to tier-2 cities, we cover job opportunities across India, ensuring access for everyone regardless of location.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <h2 style="margin-bottom: 1rem;">Our Growing Impact</h2>
+            <p style="opacity: 0.95; margin-bottom: 2rem;">Making a difference in the lives of support staff across India</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3 id="stat1">0</h3>
+                    <p>Active Job Seekers</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="stat2">0</h3>
+                    <p>Verified Companies</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="stat3">0</h3>
+                    <p>Jobs Posted</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="stat4">0</h3>
+                    <p>Successful Placements</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 2rem;">Our Commitment</h2>
+            <p style="max-width: 700px; margin: 0 auto 2rem; color: var(--text-secondary); line-height: 1.8;">
+                We are committed to maintaining the highest standards of service, security, and transparency. Every decision we make is guided by one principle: <strong>What's best for the job seeker and employer?</strong>
+            </p>
+            <div style="background: var(--surface); padding: 2rem; border-radius: 12px; max-width: 800px; margin: 0 auto;">
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1rem;">
+                    <strong style="color: var(--text-primary);">Privacy First:</strong> Your data is protected with industry-standard encryption and never sold to third parties.
+                </p>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1rem;">
+                    <strong style="color: var(--text-primary);">Equal Opportunity:</strong> We believe in fair hiring practices and do not tolerate discrimination of any kind.
+                </p>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    <strong style="color: var(--text-primary);">Continuous Improvement:</strong> We regularly update our platform based on user feedback to serve you better.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Join the BackboneJobs Community</h2>
+            <p>Whether you're looking for your next opportunity or searching for talented professionals</p>
+            <div class="cta-buttons">
+                <a href="register.html" class="btn-white">Register as Job Seeker</a>
+                <a href="employer-register.html" class="btn-outline">Register as Employer</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BackboneJobs</h3>
+                    <p>Empowering support staff across India</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="abous.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <a href="register.html">Post a Job</a>
+                    <a href="login.html">Employer Login</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BackboneJobs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    <script>
+        // Animate counters
+        function animateCounter(id, target) {
+            const element = document.getElementById(id);
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString() + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, duration / steps);
+        }
+
+        // Trigger animation when stats section is in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter('stat1', 10000);
+                    animateCounter('stat2', 500);
+                    animateCounter('stat3', 5000);
+                    animateCounter('stat4', 3000);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) {
+                observer.observe(statsSection);
+            }
+        });
+    </script>
+</body>
+</html>

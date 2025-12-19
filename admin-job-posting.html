@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Job - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <a href="admin-jobs.html">Jobs</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item active">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Post New Job</h1>
+                    <p>Create a job posting on behalf of an employer</p>
+                </div>
+            </div>
+
+            <!-- Job Posting Form -->
+            <div class="dashboard-section">
+                <form id="jobPostingForm">
+                    <!-- Employer Selection -->
+                    <div class="dashboard-section" style="margin-bottom: 2rem;">
+                        <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Select Employer</h2>
+                        <div class="form-group">
+                            <label for="employerId">Employer/Company *</label>
+                            <select id="employerId" class="form-input" required onchange="loadEmployerDetails()">
+                                <option value="">-- Select Employer --</option>
+                            </select>
+                            <small style="color: var(--text-secondary);">
+                                Select the employer who is posting this job
+                            </small>
+                        </div>
+                        <div id="employerInfo" style="display: none; background: var(--background); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <!-- Employer details will be shown here -->
+                        </div>
+                    </div>
+
+                    <!-- Job Basic Information -->
+                    <div class="dashboard-section" style="margin-bottom: 2rem;">
+                        <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Job Information</h2>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title *</label>
+                                <input type="text" id="jobTitle" class="form-input" required 
+                                       placeholder="e.g., Senior Software Engineer">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoryId">Category *</label>
+                                <select id="categoryId" class="form-input" required>
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobType">Job Type *</label>
+                                <select id="jobType" class="form-input" required>
+                                    <option value="Full-Time">Full-Time</option>
+                                    <option value="Part-Time">Part-Time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Internship">Internship</option>
+                                    <option value="Freelance">Freelance</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vacancies">Number of Vacancies *</label>
+                                <input type="number" id="vacancies" class="form-input" 
+                                       value="1" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Job Description *</label>
+                            <textarea id="description" class="form-input" rows="6" required
+                                      placeholder="Describe the job role, responsibilities, and what you're looking for..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requirements">Requirements</label>
+                            <textarea id="requirements" class="form-input" rows="4"
+                                      placeholder="Skills, qualifications, and requirements for this position..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="responsibilities">Responsibilities</label>
+                            <textarea id="responsibilities" class="form-input" rows="4"
+                                      placeholder="Day-to-day responsibilities and tasks..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Location & Salary -->
+                    <div class="dashboard-section" style="margin-bottom: 2rem;">
+                        <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Location & Compensation</h2>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="location">Location *</label>
+                                <input type="text" id="location" class="form-input" required
+                                       placeholder="e.g., Mumbai, Maharashtra">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" class="form-input"
+                                       placeholder="Mumbai">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" class="form-input"
+                                       placeholder="Maharashtra">
+                            </div>
+                            <div class="form-group">
+                                <label for="pincode">PIN Code</label>
+                                <input type="text" id="pincode" class="form-input"
+                                       placeholder="560077">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="salaryMin">Minimum Salary (₹) *</label>
+                                <input type="number" id="salaryMin" class="form-input" required
+                                       placeholder="300000" min="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salaryMax">Maximum Salary (₹) *</label>
+                                <input type="number" id="salaryMax" class="form-input" required
+                                       placeholder="600000" min="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem;">
+                                    <input type="checkbox" id="salaryNegotiable">
+                                    <span>Salary Negotiable</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience & Education -->
+                    <div class="dashboard-section" style="margin-bottom: 2rem;">
+                        <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Requirements</h2>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="experienceRequired">Experience Required</label>
+                                <select id="experienceRequired" class="form-input">
+                                    <option value="Any">Any</option>
+                                    <option value="Fresher">Fresher</option>
+                                    <option value="0-1 years">0-1 years</option>
+                                    <option value="1-3 years">1-3 years</option>
+                                    <option value="3-5 years">3-5 years</option>
+                                    <option value="5-10 years">5-10 years</option>
+                                    <option value="10+ years">10+ years</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="educationRequired">Education Required</label>
+                                <input type="text" id="educationRequired" class="form-input"
+                                       placeholder="e.g., Bachelor's in Computer Science">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="workTimings">Work Timings</label>
+                                <input type="text" id="workTimings" class="form-input"
+                                       placeholder="e.g., 9:00 AM - 6:00 PM">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div class="dashboard-section" style="margin-bottom: 2rem;">
+                        <h2 style="color: var(--text-primary); margin-bottom: 1rem;">Additional Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="benefits">Benefits & Perks</label>
+                            <textarea id="benefits" class="form-input" rows="3"
+                                      placeholder="e.g., Health insurance, flexible hours, work from home..."></textarea>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="contactEmail">Contact Email</label>
+                                <input type="email" id="contactEmail" class="form-input"
+                                       placeholder="hr@company.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactPhone">Contact Phone</label>
+                                <input type="tel" id="contactPhone" class="form-input"
+                                       placeholder="9876543210">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="whatsappNumber">WhatsApp Number</label>
+                                <input type="tel" id="whatsappNumber" class="form-input"
+                                       placeholder="9876543210">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="applicationDeadline">Application Deadline</label>
+                                <input type="date" id="applicationDeadline" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobStatus">Job Status</label>
+                                <select id="jobStatus" class="form-input">
+                                    <option value="Active">Active</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem;">
+                                    <input type="checkbox" id="isFeatured">
+                                    <span>Featured Job</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                        <button type="button" onclick="window.history.back()" class="btn-secondary">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            📝 Post Job
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        let employers = [];
+        let categories = [];
+
+        // Load employers and categories
+        async function loadFormData() {
+            try {
+                // Load employers
+                const empResponse = await fetch(API_URL + 'admin/employers.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                const empData = await empResponse.json();
+                
+                if (empData.success && empData.employers) {
+                    employers = empData.employers.filter(e => e.is_active == 1);
+                    const empSelect = document.getElementById('employerId');
+                    empSelect.innerHTML = '<option value="">-- Select Employer --</option>' +
+                        employers.map(emp => 
+                            `<option value="${emp.id}">${escapeHtml(emp.company_name)} (${escapeHtml(emp.email)})</option>`
+                        ).join('');
+                }
+
+                // Load categories
+                const catResponse = await fetch(API_URL + 'admin/categories.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                const catData = await catResponse.json();
+                
+                if (catData.success && catData.categories) {
+                    categories = catData.categories.filter(c => c.is_active == 1);
+                    const catSelect = document.getElementById('categoryId');
+                    catSelect.innerHTML = '<option value="">-- Select Category --</option>' +
+                        categories.map(cat => 
+                            `<option value="${cat.id}">${escapeHtml(cat.category_name)}</option>`
+                        ).join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to load form data', 'error');
+            }
+        }
+
+        function loadEmployerDetails() {
+            const empId = document.getElementById('employerId').value;
+            const empInfo = document.getElementById('employerInfo');
+            
+            if (!empId) {
+                empInfo.style.display = 'none';
+                return;
+            }
+
+            const employer = employers.find(e => e.id == empId);
+            if (employer) {
+                empInfo.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div>
+                            <small style="color: var(--text-secondary);">Contact Person:</small>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.contact_person)}</p>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-secondary);">Email:</small>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.email)}</p>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-secondary);">Phone:</small>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.phone)}</p>
+                        </div>
+                        ${employer.city ? `
+                            <div>
+                                <small style="color: var(--text-secondary);">Location:</small>
+                                <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.city)}, ${escapeHtml(employer.state || '')}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                empInfo.style.display = 'block';
+
+                // Auto-fill some fields
+                if (employer.phone) document.getElementById('contactPhone').value = employer.phone;
+                if (employer.email) document.getElementById('contactEmail').value = employer.email;
+                if (employer.whatsapp_number) document.getElementById('whatsappNumber').value = employer.whatsapp_number;
+            }
+        }
+
+        // Form submission
+        document.getElementById('jobPostingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const employerId = document.getElementById('employerId').value;
+            
+            if (!employerId) {
+                showToast('Please select an employer', 'error');
+                return;
+            }
+
+            const employer = employers.find(e => e.id == employerId);
+            if (!employer) {
+                showToast('Selected employer not found', 'error');
+                return;
+            }
+
+            const salaryMin = parseFloat(document.getElementById('salaryMin').value);
+            const salaryMax = parseFloat(document.getElementById('salaryMax').value);
+
+            if (salaryMin > salaryMax) {
+                showToast('Minimum salary cannot be greater than maximum salary', 'error');
+                return;
+            }
+
+            const jobData = {
+                employer_id: employerId,
+                category_id: document.getElementById('categoryId').value,
+                title: document.getElementById('jobTitle').value,
+                company_name: employer.company_name,
+                description: document.getElementById('description').value,
+                requirements: document.getElementById('requirements').value,
+                responsibilities: document.getElementById('responsibilities').value,
+                job_type: document.getElementById('jobType').value,
+                experience_required: document.getElementById('experienceRequired').value,
+                education_required: document.getElementById('educationRequired').value,
+                salary_min: salaryMin,
+                salary_max: salaryMax,
+                salary_negotiable: document.getElementById('salaryNegotiable').checked ? 1 : 0,
+                location: document.getElementById('location').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                pincode: document.getElementById('pincode').value,
+                work_timings: document.getElementById('workTimings').value,
+                benefits: document.getElementById('benefits').value,
+                vacancies: parseInt(document.getElementById('vacancies').value),
+                contact_email: document.getElementById('contactEmail').value,
+                contact_phone: document.getElementById('contactPhone').value,
+                whatsapp_number: document.getElementById('whatsappNumber').value,
+                application_deadline: document.getElementById('applicationDeadline').value || null,
+                status: document.getElementById('jobStatus').value,
+                is_featured: document.getElementById('isFeatured').checked ? 1 : 0
+            };
+
+            try {
+                const response = await fetch(API_URL + 'admin/job-posting.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Job posted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showToast(data.message || 'Failed to post job', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            loadFormData();
+        });
+    </script>
+
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+        }
+    </style>
+</body>
+</html>

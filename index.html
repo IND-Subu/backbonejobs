@@ -3,8 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Subrata Sahoo">
     <title>BackboneJobs - Support Staff Jobs India</title>
+    <meta name="description" content="BackboneJobs connects job seekers with employers. Search jobs, post jobs, and find the perfect match quickly. Fast, simple, and free.">
+    <meta name="keywords" content="jobs, recruitment, hiring, job portal, job search, employers, employees, career">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!--Google adsence link -->
+    <meta name="google-adsense-account" content="ca-pub-1060037193333326">
+    
+    <!-- Highly Recommended SEO Tags -->
+    <meta property="og:title" content="BackboneJobs - Find Jobs & Hire Talent">
+    <meta property="og:description" content="The easiest way to find facility jobs and hire support staff. Free job posting & fast applicant response.">
+    <meta property="og:image" content="https://www.backbonejobs.xyz/images/logo.png">
+    <meta property="og:url" content="https://www.backbonejobs.xyz">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BackboneJobs">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BackboneJobs - Find Jobs & Hire Talent">
+    <meta name="twitter:description" content="Search jobs, post jobs, hire talent. Simple & fast.">
+    <meta name="twitter:image" content="https://www.backbonejobs.xyz/images/logo.jpg">
+    
+    <!-- Prevent MIME sniffing -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Prefetch DNS (optional but speeds up) -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    
+    <!-- Canonical URL (prevents duplicate pages in Google) -->
+    <link rel="canonical" href="https://www.backbonejobs.xyz/">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
     <link rel="stylesheet" href="css/style.css">
+    
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "BackboneJobs",
+          "url": "https://www.backbonejobs.xyz/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.backbonejobs.xyz/jobs.html?title={search_term}&location=",
+            "query-input": "required name=search_term"
+          }
+        }
+    </script>
+
 </head>
 <body>
     <!-- Navigation -->
@@ -14,23 +68,14 @@
                 <h2>🦴 BackboneJobs</h2>
                 <p class="tagline">The Backbone of Organizations</p>
             </div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#jobs">Find Jobs</a>
-                <a href="login.html">Login</a>
-                <a href="register.html" class="btn-primary">Get Started</a>
-                <button id="darkModeToggle" class="dark-toggle">🌙</button>
-            </div>
+            <div class="nav-links"></div>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </div>
     </nav>
 
     <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="#features">Features</a>
-        <a href="#jobs">Find Jobs</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Get Started</a>
+    <div class="mobile-menu" id="mobileMenu" style="display: none;">
+        <!-- Will be populated by navbar.js if needed -->
     </div>
 
     <!-- Hero Section -->
@@ -179,8 +224,8 @@
                 </div>
                 <div class="footer-section">
                     <h4>For Employers</h4>
-                    <a href="employer-register.html">Post a Job</a>
-                    <a href="employer-login.html">Employer Login</a>
+                    <a href="post-job">Post a Job</a>
+                    <a href="login.html">Employer Login</a>
                 </div>
                 <div class="footer-section">
                     <h4>Legal</h4>
@@ -195,5 +240,8 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/darkmode.js"></script>
+
 </body>
 </html>

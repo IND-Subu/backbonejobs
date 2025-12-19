@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Feedback - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <a href="admin-feedback.html" class="active">Feedback</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item active">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>User Feedback</h1>
+                    <p>Review and respond to user feedback</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="exportFeedback()" class="btn-secondary">📥 Export</button>
+                    <button onclick="markAllAsRead()" class="btn-primary">✅ Mark All Read</button>
+                </div>
+            </div>
+
+            <!-- Filter and Search -->
+            <div class="dashboard-section" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="searchFeedback" placeholder="Search feedback..." 
+                           onkeyup="filterFeedback()" class="form-input" style="flex: 1; min-width: 250px;">
+                    <select id="filterType" onchange="filterFeedback()" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="bug">🐛 Bug Report</option>
+                        <option value="feature">✨ Feature Request</option>
+                        <option value="general">💬 General</option>
+                        <option value="complaint">⚠️ Complaint</option>
+                        <option value="suggestion">💡 Suggestion</option>
+                    </select>
+                    <select id="filterStatus" onchange="filterFeedback()" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="unread">Unread</option>
+                        <option value="read">Read</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Feedback Stats -->
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #3b82f6;">💬</div>
+                    <div class="stat-content">
+                        <h3 id="totalFeedback">0</h3>
+                        <p>Total Feedback</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f59e0b;">📩</div>
+                    <div class="stat-content">
+                        <h3 id="unreadFeedback">0</h3>
+                        <p>Unread</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #10b981;">✅</div>
+                    <div class="stat-content">
+                        <h3 id="resolvedFeedback">0</h3>
+                        <p>Resolved</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ef4444;">🐛</div>
+                    <div class="stat-content">
+                        <h3 id="bugReports">0</h3>
+                        <p>Bug Reports</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback List -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>All Feedback (<span id="feedbackCount">0</span>)</h2>
+                </div>
+                <div id="feedbackList" class="feedback-list">
+                    <div style="text-align: center; padding: 2rem;">
+                        Loading feedback...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Feedback Details Modal -->
+    <div id="feedbackModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2>Feedback Details</h2>
+                <button class="modal-close" onclick="closeFeedbackModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="feedbackDetails">
+                    <!-- Details will be populated here -->
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <h3 style="margin-bottom: 1rem;">Admin Response</h3>
+                    <textarea id="adminResponse" class="form-input" rows="4" 
+                              placeholder="Type your response here..."></textarea>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button onclick="updateFeedbackStatus('read')" class="btn-secondary">
+                            👁️ Mark as Read
+                        </button>
+                        <button onclick="updateFeedbackStatus('resolved')" class="btn-primary">
+                            ✅ Mark as Resolved
+                        </button>
+                        <button onclick="sendResponse()" class="btn-primary">
+                            📧 Send Response
+                        </button>
+                        <button onclick="deleteFeedback()" class="btn-action" 
+                                style="background: var(--error); margin-left: auto;">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script src="js/admin-feedback.js"></script>
+</body>
+</html>

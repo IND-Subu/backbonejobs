@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Approvals - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item active">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Pending Approvals</h1>
+                    <p>Review and approve employer registrations</p>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f59e0b;">⏳</div>
+                    <div class="stat-content">
+                        <h3 id="pendingCount">0</h3>
+                        <p>Pending Approval</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #10b981;">✅</div>
+                    <div class="stat-content">
+                        <h3 id="approvedCount">0</h3>
+                        <p>Approved Today</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ef4444;">❌</div>
+                    <div class="stat-content">
+                        <h3 id="rejectedCount">0</h3>
+                        <p>Rejected Today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Employers -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Pending Employer Verifications</h2>
+                </div>
+                <div id="pendingEmployers">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div class="spinner"></div>
+                        <p style="color: var(--text-secondary); margin-top: 1rem;">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Employer Details Modal -->
+    <div id="employerModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2>Employer Details</h2>
+                <button class="modal-close" onclick="closeEmployerModal()">×</button>
+            </div>
+            <div class="modal-body" id="employerDetails">
+                <!-- Details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        let pendingEmployers = [];
+
+        async function loadPendingApprovals() {
+            try {
+                const response = await fetch(API_URL + 'admin/approvals.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    pendingEmployers = data.pending_employers || [];
+                    updateStats(data.stats);
+                    displayPendingEmployers(pendingEmployers);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('pendingEmployers').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--error);">
+                        Failed to load pending approvals
+                    </div>
+                `;
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('pendingCount').textContent = stats.pending || 0;
+            document.getElementById('approvedCount').textContent = stats.approved_today || 0;
+            document.getElementById('rejectedCount').textContent = stats.rejected_today || 0;
+        }
+
+        function displayPendingEmployers(employers) {
+            const container = document.getElementById('pendingEmployers');
+            
+            if (!employers || employers.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">All Caught Up!</h3>
+                        <p style="color: var(--text-secondary);">No pending employer approvals at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="display: grid; gap: 1.5rem;">
+                    ${employers.map(emp => `
+                        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                <div style="flex: 1;">
+                                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">
+                                        ${escapeHtml(emp.company_name)}
+                                    </h3>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                        👤 ${escapeHtml(emp.contact_person)}
+                                    </p>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                        📧 ${escapeHtml(emp.email)}
+                                    </p>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                        📞 ${escapeHtml(emp.phone)}
+                                    </p>
+                                </div>
+                                <span class="status-badge status-pending">⏳ Pending</span>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                                <div>
+                                    <small style="color: var(--text-secondary);">City:</small>
+                                    <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(emp.city || '-')}</p>
+                                </div>
+                                <div>
+                                    <small style="color: var(--text-secondary);">Industry:</small>
+                                    <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(emp.industry || '-')}</p>
+                                </div>
+                                <div>
+                                    <small style="color: var(--text-secondary);">Registered:</small>
+                                    <p style="color: var(--text-primary); margin-top: 0.25rem;">${new Date(emp.created_at).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <button class="btn-action" onclick="viewEmployerDetails(${emp.id})" style="flex: 1;">
+                                    👁️ View Details
+                                </button>
+                                <button class="btn-action" onclick="approveEmployer(${emp.id})" 
+                                        style="flex: 1; background: var(--success);">
+                                    ✅ Approve
+                                </button>
+                                <button class="btn-action" onclick="rejectEmployer(${emp.id})" 
+                                        style="flex: 1; background: var(--error);">
+                                    ❌ Reject
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function viewEmployerDetails(empId) {
+            const employer = pendingEmployers.find(e => e.id === empId);
+            if (!employer) return;
+
+            const detailsHTML = `
+                <div style="display: grid; gap: 1.5rem;">
+                    <div>
+                        <strong style="color: var(--text-secondary);">Company Name:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.company_name)}</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-secondary);">Contact Person:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.contact_person)}</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-secondary);">Email:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.email)}</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-secondary);">Phone:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.phone)}</p>
+                    </div>
+                    ${employer.whatsapp_number ? `
+                        <div>
+                            <strong style="color: var(--text-secondary);">WhatsApp:</strong>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.whatsapp_number)}</p>
+                        </div>
+                    ` : ''}
+                    ${employer.company_address ? `
+                        <div>
+                            <strong style="color: var(--text-secondary);">Address:</strong>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem; white-space: pre-wrap;">${escapeHtml(employer.company_address)}</p>
+                        </div>
+                    ` : ''}
+                    <div>
+                        <strong style="color: var(--text-secondary);">Location:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.city || '')}, ${escapeHtml(employer.state || '')}</p>
+                    </div>
+                    ${employer.industry ? `
+                        <div>
+                            <strong style="color: var(--text-secondary);">Industry:</strong>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem;">${escapeHtml(employer.industry)}</p>
+                        </div>
+                    ` : ''}
+                    ${employer.company_description ? `
+                        <div>
+                            <strong style="color: var(--text-secondary);">Company Description:</strong>
+                            <p style="color: var(--text-primary); margin-top: 0.25rem; white-space: pre-wrap;">${escapeHtml(employer.company_description)}</p>
+                        </div>
+                    ` : ''}
+                    <div>
+                        <strong style="color: var(--text-secondary);">Registered On:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.25rem;">${new Date(employer.created_at).toLocaleString()}</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button onclick="approveEmployer(${employer.id}); closeEmployerModal();" 
+                            class="btn-primary" style="flex: 1; background: var(--success);">
+                        ✅ Approve Employer
+                    </button>
+                    <button onclick="rejectEmployer(${employer.id}); closeEmployerModal();" 
+                            class="btn-primary" style="flex: 1; background: var(--error);">
+                        ❌ Reject Employer
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('employerDetails').innerHTML = detailsHTML;
+            document.getElementById('employerModal').style.display = 'flex';
+        }
+
+        function closeEmployerModal() {
+            document.getElementById('employerModal').style.display = 'none';
+        }
+
+        async function approveEmployer(empId) {
+            if (!confirm('Approve this employer?')) return;
+
+            try {
+                const response = await fetch(API_URL + 'admin/approvals.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify({ employer_id: empId, action: 'approve' })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Employer approved successfully!', 'success');
+                    loadPendingApprovals();
+                } else {
+                    showToast(data.message || 'Failed to approve', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        async function rejectEmployer(empId) {
+            if (!confirm('Reject this employer? This will deactivate their account.')) return;
+
+            try {
+                const response = await fetch(API_URL + 'admin/approvals.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify({ employer_id: empId, action: 'reject' })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Employer rejected', 'success');
+                    loadPendingApprovals();
+                } else {
+                    showToast(data.message || 'Failed to reject', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'employerModal') {
+                closeEmployerModal();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            loadPendingApprovals();
+        });
+    </script>
+
+    <style>
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

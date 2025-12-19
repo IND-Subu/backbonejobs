@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (title) {
         document.getElementById('filterKeywords').value = title;
     }
+    
+    setupDarkModeToggle();
 });
 
 // Load all jobs
@@ -39,11 +41,13 @@ async function loadJobs() {
             filteredJobs = [...allJobs];
             
             // Update total count
-            document.getElementById('totalJobsCount').textContent = allJobs.length;
+            if (document.getElementById('totalJobsCount')) {
+                document.getElementById('totalJobsCount').textContent = allJobs.length;
+            }
             
             applyFilters();
         } else {
-            showNoResults();
+            showNoJobsState();
         }
     } catch (error) {
         console.error('Error loading jobs:', error);
@@ -350,7 +354,7 @@ function shareJob(jobId) {
     const job = allJobs.find(j => j.id === jobId);
     if (!job) return;
     
-    const shareUrl = `${window.location.origin}/job-details.html?id=${jobId}`;
+    const shareUrl = `${window.location.origin}/job-details.php?id=${jobId}`;
     const shareText = `Check out this job: ${job.title} at ${job.company_name}`;
     
     if (navigator.share) {
@@ -379,6 +383,12 @@ function showLoading() {
 // Show error state
 function showError() {
     const jobsGrid = document.getElementById('jobsGrid');
+    const loadingState = document.getElementById('loadingState');
+    const noResults = document.getElementById('noResults');
+    
+    loadingState.style.display = 'none';
+    noResults.style.display = 'none';
+    
     jobsGrid.style.display = 'block';
     jobsGrid.innerHTML = `
         <div style="text-align: center; padding: 3rem; color: var(--error);">
@@ -387,5 +397,50 @@ function showError() {
             <button class="btn-primary" onclick="loadJobs()">Retry</button>
         </div>
     `;
-    document.getElementById('loadingState').style.display = 'none';
+}
+
+// Show no jobs state
+function showNoJobsState() {
+    const jobsGrid = document.getElementById('jobsGrid');
+    const loadingState = document.getElementById('loadingState');
+    const noResults = document.getElementById('noResults');
+    
+    loadingState.style.display = 'none';
+    jobsGrid.style.display = 'none';
+    noResults.style.display = 'block';
+}
+
+// Check if user is authenticated
+function checkAuth() {
+    return localStorage.getItem('user_token') !== null;
+}
+
+// Dark Mode Toggle
+function setupDarkModeToggle() {
+    console.log('Darkmode found');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    if (!darkModeToggle) return;
+
+    // Set initial state
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.setAttribute('data-theme', 'dark');
+        darkModeToggle.textContent = '☀️';
+    } else {
+        darkModeToggle.textContent = '🌙';
+    }
+
+    // Add click listener
+    darkModeToggle.addEventListener('click', () => {
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            localStorage.setItem('darkMode', 'disabled');
+            darkModeToggle.textContent = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('darkMode', 'enabled');
+            darkModeToggle.textContent = '☀️';
+        }
+    });
 }

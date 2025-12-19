@@ -6,6 +6,22 @@
     <title>Register - BackboneJobs</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
+    
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Register - BackboneJobs",
+          "url": "https://www.backbonejobs.xyz/register.html",
+          "description": "Create a BackboneJobs account to search for jobs or post new job openings.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "BackboneJobs",
+            "url": "https://www.backbonejobs.xyz/"
+          }
+        }
+    </script>
+
 </head>
 <body>
     <nav class="navbar">
@@ -155,45 +171,68 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // Switch between forms
+        // Switch between forms (currentUserType is declared in auth.js)
         function switchTab(type) {
             currentUserType = type;
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
             
+            const jobseekerForm = document.getElementById('jobseekerForm');
+            const employerForm = document.getElementById('employerForm');
+            
             if (type === 'employer') {
-                document.getElementById('jobseekerForm').style.display = 'none';
-                document.getElementById('employerForm').style.display = 'block';
+                jobseekerForm.style.display = 'none';
+                employerForm.style.display = 'block';
                 
-                // Make employer fields required
-                document.querySelectorAll('#employerForm input[type="text"], #employerForm input[type="email"], #employerForm input[type="tel"], #employerForm input[type="password"], #employerForm textarea').forEach(input => {
-                    if (!input.name.includes('confirm')) {
-                        input.required = true;
-                    }
+                // Make employer fields required and remove from job seeker
+                document.querySelectorAll('#employerForm input[required], #employerForm textarea[required]').forEach(input => {
+                    input.removeAttribute('required');
+                });
+                document.querySelectorAll('#jobseekerForm input[required], #jobseekerForm textarea[required]').forEach(input => {
+                    input.removeAttribute('required');
                 });
                 
-                // Remove job seeker required
-                document.querySelectorAll('#jobseekerForm input').forEach(input => {
-                    input.required = false;
-                });
+                // Set employer required fields
+                document.getElementById('companyName').required = true;
+                document.getElementById('contactPerson').required = true;
+                document.getElementById('empEmail').required = true;
+                document.getElementById('empPhone').required = true;
+                document.getElementById('whatsapp').required = true;
+                document.getElementById('empPassword').required = true;
+                document.getElementById('empConfirmPassword').required = true;
+                document.getElementById('companyAddress').required = true;
+                document.getElementById('city').required = true;
+                document.getElementById('state').required = true;
+                document.getElementById('empTerms').required = true;
             } else {
-                document.getElementById('jobseekerForm').style.display = 'block';
-                document.getElementById('employerForm').style.display = 'none';
+                jobseekerForm.style.display = 'block';
+                employerForm.style.display = 'none';
                 
-                // Make job seeker fields required
-                document.querySelectorAll('#jobseekerForm input[type="text"], #jobseekerForm input[type="email"], #jobseekerForm input[type="tel"], #jobseekerForm input[type="password"]').forEach(input => {
-                    if (!input.name.includes('confirm')) {
-                        input.required = true;
-                    }
+                // Make job seeker fields required and remove from employer
+                document.querySelectorAll('#employerForm input[required], #employerForm textarea[required]').forEach(input => {
+                    input.removeAttribute('required');
+                });
+                document.querySelectorAll('#jobseekerForm input[required], #jobseekerForm textarea[required]').forEach(input => {
+                    input.removeAttribute('required');
                 });
                 
-                // Remove employer required
-                document.querySelectorAll('#employerForm input, #employerForm textarea').forEach(input => {
-                    input.required = false;
-                });
+                // Set job seeker required fields
+                document.getElementById('name').required = true;
+                document.getElementById('email').required = true;
+                document.getElementById('phone').required = true;
+                document.getElementById('password').required = true;
+                document.getElementById('confirmPassword').required = true;
+                document.getElementById('location').required = true;
+                document.getElementById('terms').required = true;
             }
         }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Make sure job seeker form is properly initialized
+            switchTab('jobseeker');
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <section style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="max-width: 450px; width: 100%;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔐</div>
+                <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    Admin Access
+                </h1>
+                <p style="color: var(--text-secondary);">
+                    Enter your credentials to access the admin panel
+                </p>
+            </div>
+
+            <div style="background: var(--surface); border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px var(--shadow);">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" 
+                               placeholder="admin@backbonejobs.com" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-input" 
+                               placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                        🔓 Login to Admin Panel
+                    </button>
+                </form>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    <a href="login.html" style="color: var(--primary-color); text-decoration: none;">
+                        ← Back to regular login
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const adminLoginForm = document.getElementById('adminLoginForm');
+
+        adminLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL + 'admin/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store admin credentials
+                    localStorage.setItem('user_token', data.token);
+                    localStorage.setItem('user_type', 'admin');
+                    localStorage.setItem('user_data', JSON.stringify(data.admin));
+
+                    showToast('Login successful!', 'success');
+
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1000);
+                } else {
+                    showToast(data.message || 'Invalid credentials', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            }
+        });
+
+        // Check if already logged in as admin
+        document.addEventListener('DOMContentLoaded', () => {
+            const userType = localStorage.getItem('user_type');
+            const token = localStorage.getItem('user_token');
+
+            if (token && userType === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            }
+            
+            // Setup dark mode
+            setupDarkModeToggle();
+        });
+        
+        // Dark Mode Toggle
+        function setupDarkModeToggle() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+
+            if (!darkModeToggle) return;
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.setAttribute('data-theme', 'dark');
+                darkModeToggle.textContent = '☀️';
+            } else {
+                darkModeToggle.textContent = '🌙';
+            }
+
+            darkModeToggle.addEventListener('click', () => {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('darkMode', 'disabled');
+                    darkModeToggle.textContent = '🌙';
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('darkMode', 'enabled');
+                    darkModeToggle.textContent = '☀️';
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</body>
+</html>

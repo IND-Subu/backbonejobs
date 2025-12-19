@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Jobs - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);"><h2>🦴 BackboneJobs</h2></a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item active">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div><h1>Manage Jobs</h1><p>View and manage job postings</p></div>
+                <button onclick="window.location.href=API_URL+'admin/export.php?type=jobs&token='+localStorage.getItem('user_token')" class="btn-primary">📥 Export</button>
+            </div>
+
+            <div class="dashboard-section" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="searchJobs" placeholder="Search jobs..." onkeyup="filterJobs()" class="form-input" style="flex: 1; min-width: 250px;">
+                    <select id="filterStatus" onchange="filterJobs()" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Closed">Closed</option>
+                        <option value="Draft">Draft</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-header"><h2>All Jobs (<span id="jobCount">0</span>)</h2></div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Job Title</th><th>Company</th><th>Category</th><th>Location</th><th>Type</th><th>Applications</th><th>Status</th><th>Posted</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="jobsTable">
+                            <tr><td colspan="9" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        let allJobs = [];
+        async function loadJobs() {
+            try {
+                const response = await fetch(API_URL + 'admin/jobs.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                const data = await response.json();
+                if (data.success && data.jobs) {
+                    allJobs = data.jobs;
+                    displayJobs(allJobs);
+                    document.getElementById('jobCount').textContent = allJobs.length;
+                }
+            } catch (error) { console.error('Error:', error); }
+        }
+
+        function displayJobs(jobs) {
+            const table = document.getElementById('jobsTable');
+            if (!jobs || jobs.length === 0) {
+                table.innerHTML = '<tr><td colspan="9" style="text-align: center;">No jobs found</td></tr>';
+                return;
+            }
+            table.innerHTML = jobs.map(job => `
+                <tr>
+                    <td><strong>${escapeHtml(job.title)}</strong></td>
+                    <td>${escapeHtml(job.company_name)}</td>
+                    <td>${escapeHtml(job.category_name || '-')}</td>
+                    <td>${escapeHtml(job.location)}</td>
+                    <td>${escapeHtml(job.job_type)}</td>
+                    <td>${job.application_count || 0}</td>
+                    <td><span class="status-badge status-${job.status.toLowerCase()}">${job.status}</span></td>
+                    <td>${new Date(job.posted_date).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn-action" onclick="window.location.href='job-details.php?id=${job.id}'" style="font-size: 0.85rem;">👁️ View</button>
+                        <button class="btn-action" onclick="deleteJob(${job.id})" style="background: var(--error); font-size: 0.85rem;">🗑️ Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterJobs() {
+            const searchTerm = document.getElementById('searchJobs').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            let filtered = allJobs.filter(job => {
+                const matchSearch = !searchTerm || job.title.toLowerCase().includes(searchTerm) || job.company_name.toLowerCase().includes(searchTerm);
+                const matchStatus = !statusFilter || job.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+            displayJobs(filtered);
+            document.getElementById('jobCount').textContent = filtered.length;
+        }
+
+        async function deleteJob(jobId) {
+            if (!confirm('Delete this job? This will also delete all applications.')) return;
+            try {
+                const response = await fetch(API_URL + 'admin/jobs.php', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('user_token')},
+                    body: JSON.stringify({ job_id: jobId })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Job deleted', 'success');
+                    loadJobs();
+                }
+            } catch (error) { showToast('Error occurred', 'error'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadJobs);
+    </script>
+</body>
+</html>

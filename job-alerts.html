@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Alerts - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links"></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-applications.html" class="menu-item">
+                    <span class="menu-icon">📝</span>
+                    <span>My Applications</span>
+                </a>
+                <a href="saved-jobs.html" class="menu-item">
+                    <span class="menu-icon">❤️</span>
+                    <span>Saved Jobs</span>
+                </a>
+                <a href="job-alerts.html" class="menu-item active">
+                    <span class="menu-icon">🔔</span>
+                    <span>Job Alerts</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Job Alerts</h1>
+                    <p>Get notified about jobs matching your preferences</p>
+                </div>
+                <button class="btn-primary" onclick="showCreateAlert()">Create New Alert</button>
+            </div>
+
+            <!-- Create Alert Form -->
+            <div id="createAlertForm" class="dashboard-section" style="display: none;">
+                <h2 style="margin-bottom: 1.5rem;">Create Job Alert</h2>
+                <form id="alertForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="keywords">Keywords</label>
+                        <input type="text" id="keywords" name="keywords" placeholder="e.g., Security Guard, Housekeeping">
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" placeholder="City, State">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category_id">
+                                <option value="">All Categories</option>
+                                <option value="1">Security Guard</option>
+                                <option value="2">Housekeeping</option>
+                                <option value="3">MST</option>
+                                <option value="4">Facility Management</option>
+                                <option value="5">Helper</option>
+                                <option value="6">Driver</option>
+                                <option value="7">Office Boy</option>
+                                <option value="8">Pantry Staff</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="jobType">Job Type</label>
+                            <select id="jobType" name="job_type">
+                                <option value="">Any</option>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Temporary">Temporary</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="minSalary">Minimum Salary (₹)</label>
+                            <input type="number" id="minSalary" name="min_salary" placeholder="e.g., 15000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="frequency">Alert Frequency</label>
+                        <select id="frequency" name="frequency">
+                            <option value="Immediate">Immediate (as jobs are posted)</option>
+                            <option value="Daily">Daily Digest</option>
+                            <option value="Weekly">Weekly Digest</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-primary">Create Alert</button>
+                        <button type="button" class="btn-secondary" onclick="hideCreateAlert()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Alerts List -->
+            <div class="dashboard-section">
+                <h2 style="margin-bottom: 1.5rem;">Your Active Alerts</h2>
+                <div id="alertsList">
+                    <p style="text-align: center; padding: 2rem; color: var(--text-secondary);">Loading alerts...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let alerts = [];
+
+        function showCreateAlert() {
+            document.getElementById('createAlertForm').style.display = 'block';
+        }
+
+        function hideCreateAlert() {
+            document.getElementById('createAlertForm').style.display = 'none';
+            document.getElementById('alertForm').reset();
+        }
+
+        // Create Alert
+        document.getElementById('alertForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const alert = {
+                id: Date.now(),
+                keywords: formData.get('keywords'),
+                location: formData.get('location'),
+                category_id: formData.get('category_id'),
+                job_type: formData.get('job_type'),
+                min_salary: formData.get('min_salary'),
+                frequency: formData.get('frequency'),
+                is_active: true,
+                created_at: new Date().toISOString()
+            };
+            
+            alerts.push(alert);
+            localStorage.setItem('job_alerts', JSON.stringify(alerts));
+            
+            showToast('Job alert created successfully!', 'success');
+            hideCreateAlert();
+            displayAlerts();
+        });
+
+        function displayAlerts() {
+            const container = document.getElementById('alertsList');
+            
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🔔</div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No Job Alerts</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Create an alert to get notified about new jobs</p>
+                        <button class="btn-primary" onclick="showCreateAlert()">Create Alert</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = alerts.map((alert, index) => `
+                <div style="background: var(--background); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">
+                                ${alert.keywords || 'All Jobs'} ${alert.location ? `in ${alert.location}` : ''}
+                            </h3>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                ${alert.job_type ? `<span style="padding: 0.25rem 0.75rem; background: var(--surface); border-radius: 20px; font-size: 0.85rem;">💼 ${alert.job_type}</span>` : ''}
+                                ${alert.min_salary ? `<span style="padding: 0.25rem 0.75rem; background: var(--surface); border-radius: 20px; font-size: 0.85rem;">💰 ₹${alert.min_salary}+</span>` : ''}
+                                <span style="padding: 0.25rem 0.75rem; background: var(--surface); border-radius: 20px; font-size: 0.85rem;">📅 ${alert.frequency}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="toggleAlert(${index})" style="padding: 0.5rem 1rem; background: ${alert.is_active ? 'var(--success)' : 'var(--border)'}; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                ${alert.is_active ? '✓ Active' : '✗ Paused'}
+                            </button>
+                            <button onclick="deleteAlert(${index})" style="padding: 0.5rem 1rem; background: var(--error); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    <small style="color: var(--text-secondary);">Created ${new Date(alert.created_at).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+        }
+
+        function toggleAlert(index) {
+            alerts[index].is_active = !alerts[index].is_active;
+            localStorage.setItem('job_alerts', JSON.stringify(alerts));
+            showToast(alerts[index].is_active ? 'Alert activated' : 'Alert paused', 'success');
+            displayAlerts();
+        }
+
+        function deleteAlert(index) {
+            if (confirm('Are you sure you want to delete this alert?')) {
+                alerts.splice(index, 1);
+                localStorage.setItem('job_alerts', JSON.stringify(alerts));
+                showToast('Alert deleted', 'success');
+                displayAlerts();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load alerts from localStorage
+            alerts = JSON.parse(localStorage.getItem('job_alerts') || '[]');
+            displayAlerts();
+        });
+    </script>
+</body>
+</html>

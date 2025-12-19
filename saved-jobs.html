@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Jobs - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-applications.html" class="menu-item">
+                    <span class="menu-icon">📝</span>
+                    <span>My Applications</span>
+                </a>
+                <a href="saved-jobs.html" class="menu-item active">
+                    <span class="menu-icon">❤️</span>
+                    <span>Saved Jobs</span>
+                </a>
+                <a href="job-alerts.html" class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <span>Job Alerts</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Saved Jobs</h1>
+                    <p>Jobs you've bookmarked for later</p>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div id="savedJobsContainer" class="jobs-grid">
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <div class="spinner"></div>
+                        <p>Loading saved jobs...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        async function loadSavedJobs() {
+            try {
+                const response = await fetch(API_URL + 'saved-jobs.php', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    }
+                });
+                
+                const data = await response.json();
+                const container = document.getElementById('savedJobsContainer');
+                
+                if (data.success && data.saved_jobs.length > 0) {
+                    container.innerHTML = data.saved_jobs.map(job => `
+                        <div class="job-card" onclick="window.location.href='job-details.php?id=${job.job_id}'">
+                            <div class="job-header">
+                                <div>
+                                    <h3 class="job-title">${escapeHtml(job.title)}</h3>
+                                    <p class="job-company">${escapeHtml(job.company_name)}</p>
+                                </div>
+                                <button class="btn-icon saved" onclick="event.stopPropagation(); removeSavedJob(${job.job_id})" title="Remove">
+                                    ❤️
+                                </button>
+                            </div>
+                            <div class="job-details">
+                                <div class="job-detail-item">
+                                    <span>📍</span>
+                                    <span>${escapeHtml(job.location)}</span>
+                                </div>
+                                <div class="job-detail-item">
+                                    <span>💼</span>
+                                    <span>${escapeHtml(job.job_type)}</span>
+                                </div>
+                                <div class="job-detail-item">
+                                    <span>📅</span>
+                                    <span>Saved ${getTimeAgo(job.saved_date)}</span>
+                                </div>
+                            </div>
+                            <div class="job-footer">
+                                <span class="job-salary">₹${formatSalary(job.salary_min)} - ₹${formatSalary(job.salary_max)}</span>
+                                <button class="btn-apply" onclick="event.stopPropagation(); applyJob(${job.job_id})">Apply Now</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">💼</div>
+                            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No Saved Jobs</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Start saving jobs you're interested in</p>
+                            <a href="jobs.html" class="btn-primary">Browse Jobs</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading saved jobs:', error);
+                document.getElementById('savedJobsContainer').innerHTML = `
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1; color: var(--error);">
+                        Failed to load saved jobs
+                    </div>
+                `;
+            }
+        }
+
+        async function removeSavedJob(jobId) {
+            try {
+                const response = await fetch(API_URL + 'saved-jobs.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify({ job_id: jobId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Job removed from saved', 'success');
+                    loadSavedJobs();
+                }
+            } catch (error) {
+                console.error('Error removing job:', error);
+                showToast('Failed to remove job', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadSavedJobs();
+        });
+    </script>
+</body>
+</html>

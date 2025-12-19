@@ -50,7 +50,7 @@ async function loadDashboardData() {
 // Load Application Statistics
 async function loadApplicationStats() {
     try {
-        const response = await fetch(API_URL + 'applications/stats.php', {
+        const response = await fetch(API_URL + 'stats.php', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('user_token')
             }

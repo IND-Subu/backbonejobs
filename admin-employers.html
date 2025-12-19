@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Employers - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item active">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Manage Employers</h1>
+                    <p>View and manage employer accounts</p>
+                </div>
+                <button onclick="window.location.href=API_URL+'admin/export.php?type=employers&token='+localStorage.getItem('user_token')" class="btn-primary">📥 Export</button>
+            </div>
+
+            <div class="dashboard-section" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="searchEmployers" placeholder="Search employers..." onkeyup="filterEmployers()" class="form-input" style="flex: 1; min-width: 250px;">
+                    <select id="filterVerified" onchange="filterEmployers()" class="form-select">
+                        <option value="">All</option>
+                        <option value="1">Verified</option>
+                        <option value="0">Unverified</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>All Employers (<span id="employerCount">0</span>)</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Contact Person</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Jobs Posted</th>
+                                <th>Verified</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employersTable">
+                            <tr><td colspan="8" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script>
+        let allEmployers = [];
+        
+        async function loadEmployers() {
+            try {
+                const response = await fetch(API_URL + 'admin/employers.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                const data = await response.json();
+                if (data.success && data.employers) {
+                    allEmployers = data.employers;
+                    displayEmployers(allEmployers);
+                    document.getElementById('employerCount').textContent = allEmployers.length;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayEmployers(employers) {
+            const table = document.getElementById('employersTable');
+            if (!employers || employers.length === 0) {
+                table.innerHTML = '<tr><td colspan="8" style="text-align: center;">No employers found</td></tr>';
+                return;
+            }
+            table.innerHTML = employers.map(emp => `
+                <tr>
+                    <td><strong>${escapeHtml(emp.company_name)}</strong></td>
+                    <td>${escapeHtml(emp.contact_person)}</td>
+                    <td>${escapeHtml(emp.email)}</td>
+                    <td>${escapeHtml(emp.phone)}</td>
+                    <td>${emp.job_count || 0}</td>
+                    <td><span class="status-badge status-${emp.is_verified == 1 ? 'hired' : 'pending'}">${emp.is_verified == 1 ? '✓ Verified' : '⏳ Pending'}</span></td>
+                    <td><span class="status-badge status-${emp.is_active == 1 ? 'hired' : 'rejected'}">${emp.is_active == 1 ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        ${emp.is_verified == 0 ? `<button class="btn-action" onclick="verifyEmployer(${emp.id})" style="background: var(--success); font-size: 0.85rem;">✅ Verify</button>` : ''}
+                        <button class="btn-action" onclick="toggleEmployerStatus(${emp.id}, ${emp.is_active})" style="font-size: 0.85rem;">${emp.is_active == 1 ? '🚫 Deactivate' : '✅ Activate'}</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterEmployers() {
+            const searchTerm = document.getElementById('searchEmployers').value.toLowerCase();
+            const verifiedFilter = document.getElementById('filterVerified').value;
+            let filtered = allEmployers.filter(emp => {
+                const matchSearch = !searchTerm || emp.company_name.toLowerCase().includes(searchTerm) || emp.email.toLowerCase().includes(searchTerm);
+                const matchVerified = !verifiedFilter || emp.is_verified == verifiedFilter;
+                return matchSearch && matchVerified;
+            });
+            displayEmployers(filtered);
+            document.getElementById('employerCount').textContent = filtered.length;
+        }
+
+        async function verifyEmployer(empId) {
+            if (!confirm('Verify this employer?')) return;
+            try {
+                const response = await fetch(API_URL + 'admin/employers.php', {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('user_token')},
+                    body: JSON.stringify({ employer_id: empId, is_verified: 1 })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Employer verified', 'success');
+                    loadEmployers();
+                }
+            } catch (error) {
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        async function toggleEmployerStatus(empId, currentStatus) {
+            const action = currentStatus == 1 ? 'deactivate' : 'activate';
+            if (!confirm(`${action} this employer?`)) return;
+            try {
+                const response = await fetch(API_URL + 'admin/employers.php', {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('user_token')},
+                    body: JSON.stringify({ employer_id: empId, is_active: currentStatus == 1 ? 0 : 1 })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast(`Employer ${action}d`, 'success');
+                    loadEmployers();
+                }
+            } catch (error) {
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEmployers);
+    </script>
+</body>
+</html>

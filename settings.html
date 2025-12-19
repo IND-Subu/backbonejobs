@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="" id="dashboardLink1">Dashboard</a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="" id="dashboardLink2" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-applications.html" class="menu-item">
+                    <span class="menu-icon">📝</span>
+                    <span>My Applications</span>
+                </a>
+                <a href="saved-jobs.html" class="menu-item">
+                    <span class="menu-icon">❤️</span>
+                    <span>Saved Jobs</span>
+                </a>
+                <a href="job-alerts.html" class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <span>Job Alerts</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item active">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p>Manage your account preferences</p>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="dashboard-section">
+                <h2 style="margin-bottom: 1.5rem;">Change Password</h2>
+                <form id="passwordForm" class="auth-form" style="max-width: 500px;">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password *</label>
+                        <input type="password" id="currentPassword" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password *</label>
+                        <input type="password" id="newPassword" name="new_password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password *</label>
+                        <input type="password" id="confirmPassword" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Password</button>
+                </form>
+            </div>
+
+            <!-- Email Notifications -->
+            <div class="dashboard-section">
+                <h2 style="margin-bottom: 1.5rem;">Email Notifications</h2>
+                <form id="notificationForm" style="max-width: 500px;">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="jobAlerts" checked>
+                            <span>Job Alerts</span>
+                        </label>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">Receive emails about new jobs matching your preferences</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="applicationUpdates" checked>
+                            <span>Application Updates</span>
+                        </label>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">Get notified when employers update your application status</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="marketingEmails">
+                            <span>Marketing Emails</span>
+                        </label>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">Receive tips, career advice, and promotional offers</small>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Preferences</button>
+                </form>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="dashboard-section">
+                <h2 style="margin-bottom: 1.5rem;">Privacy Settings</h2>
+                <form id="privacyForm" style="max-width: 500px;">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="profileVisible" checked>
+                            <span>Make profile visible to employers</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showPhone">
+                            <span>Show phone number on applications</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Privacy</button>
+                </form>
+            </div>
+
+            <!-- Delete Account -->
+            <div class="dashboard-section" style="border: 2px solid var(--error);">
+                <h2 style="margin-bottom: 1rem; color: var(--error);">Danger Zone</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Once you delete your account, there is no going back. Please be certain.</p>
+                <button class="btn-primary" style="background: var(--error);" onclick="deleteAccount()">Delete Account</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/checkauth.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/darkmode.js"></script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/job-details.css">
+    
+    <script type="application/ld+json" id="jobSchema">
+        {
+          "@context": "https://schema.org/",
+          "@type": "JobPosting",
+          "title": "",
+          "description": "",
+          "datePosted": "",
+          "validThrough": "",
+          "employmentType": "",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": "",
+            "sameAs": "https://www.backbonejobs.xyz/"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "",
+              "addressRegion": "IN",
+              "addressCountry": "IN"
+            }
+          },
+          "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "INR",
+            "value": {
+              "@type": "QuantitativeValue",
+              "value": "",
+              "unitText": "MONTH"
+            }
+          }
+        }
+    </script>
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="jobs.html">Jobs</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="" id="authLogin"></a>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading job details...</p>
+    </div>
+
+    <!-- Job Details Container -->
+    <div id="jobDetailsContainer" class="job-details-container" style="display: none;">
+        <div class="container">
+            <div class="job-details-layout">
+                <!-- Main Content -->
+                <main class="job-main-content">
+                    <!-- Job Header -->
+                    <div class="job-header-card">
+                        <div class="job-header-top">
+                            <div class="company-logo-large" id="companyLogo">🏢</div>
+                            <div class="job-header-info">
+                                <h1 id="jobTitle">Loading...</h1>
+                                <p class="company-name" id="companyName">Loading...</p>
+                                <div class="job-meta-info">
+                                    <span id="jobLocation">📍 Location</span>
+                                    <span id="jobType">💼 Type</span>
+                                    <span id="jobPosted">📅 Posted</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="job-header-actions">
+                            <button class="btn-save" id="btnSave" onclick="toggleSaveJob()">
+                                <span id="saveIcon">🤍</span> Save Job
+                            </button>
+                            <button class="btn-share" onclick="shareJobDetails()">
+                                📤 Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Job Description -->
+                    <div class="job-section-card">
+                        <h2>Job Description</h2>
+                        <div id="jobDescription" class="content-text">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="job-section-card" id="requirementsSection" style="display: none;">
+                        <h2>Requirements</h2>
+                        <div id="jobRequirements" class="content-text">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- Responsibilities -->
+                    <div class="job-section-card" id="responsibilitiesSection" style="display: none;">
+                        <h2>Responsibilities</h2>
+                        <div id="jobResponsibilities" class="content-text">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- Benefits -->
+                    <div class="job-section-card" id="benefitsSection" style="display: none;">
+                        <h2>Benefits</h2>
+                        <div id="jobBenefits" class="content-text">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- About Company -->
+                    <div class="job-section-card">
+                        <h2>About the Company</h2>
+                        <p id="companyDescription" class="content-text">
+                            Loading...
+                        </p>
+                    </div>
+                </main>
+
+                <!-- Sidebar -->
+                <aside class="job-sidebar">
+                    <!-- Apply Card -->
+                    <div class="sidebar-card apply-card">
+                        <div class="salary-display" id="salaryDisplay">
+                            ₹ --,--- - ₹ --,---
+                        </div>
+                        <p class="salary-label">Per Month</p>
+                        
+                        <button class="btn-apply-large" id="btnApply" onclick="applyForJob()">
+                            Apply Now
+                        </button>
+                        
+                        <div id="appliedStatus" class="applied-status" style="display: none;">
+                            <span>✅</span>
+                            <p>You've already applied for this job</p>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div class="sidebar-card">
+                        <h3>Job Details</h3>
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <span class="detail-label">💼 Job Type</span>
+                                <span class="detail-value" id="sidebarJobType">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">👤 Experience</span>
+                                <span class="detail-value" id="sidebarExperience">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">🎓 Education</span>
+                                <span class="detail-value" id="sidebarEducation">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">🏢 Vacancies</span>
+                                <span class="detail-value" id="sidebarVacancies">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">⏰ Work Timings</span>
+                                <span class="detail-value" id="sidebarTimings">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">📅 Deadline</span>
+                                <span class="detail-value" id="sidebarDeadline">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Card -->
+                    <div class="sidebar-card contact-card">
+                        <h3>Contact Recruiter</h3>
+                        <p class="contact-info" id="contactEmail">
+                            📧 <span>-</span>
+                        </p>
+                        <p class="contact-info" id="contactPhone">
+                            📞 <span>-</span>
+                        </p>
+                        <button class="btn-whatsapp" id="btnWhatsApp" onclick="contactViaWhatsApp()" style="display: none;">
+                            <span>💬</span> Chat on WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- Report Job -->
+                    <div class="sidebar-card report-card">
+                        <button class="btn-report" onclick="reportJob()">
+                            🚩 Report this job
+                        </button>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- Similar Jobs -->
+            <div class="similar-jobs-section">
+                <h2>Similar Jobs</h2>
+                <div id="similarJobs" class="jobs-grid">
+                    <!-- Similar jobs will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-container" style="display: none;">
+        <div class="error-content">
+            <div class="error-icon">❌</div>
+            <h2>Job Not Found</h2>
+            <p>The job you're looking for doesn't exist or has been removed.</p>
+            <a href="jobs.html" class="btn-primary">Browse All Jobs</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BackboneJobs</h3>
+                    <p>Empowering support staff across India</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <a href="employer-register.html">Post a Job</a>
+                    <a href="employer-login.html">Employer Login</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BackboneJobs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/job-details.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const authLogin = document.getElementById('authLogin');
+            
+            if(checkAuth()){
+                // Show Logout button
+                authLogin.textContent = "Logout";
+                authLogin.href = "javascript:void(0)";
+                authLogin.onclick = () => logout();
+            } else {
+                // Show Login button
+                authLogin.textContent = "Login";
+                authLogin.href = "login.html";
+                authLogin.onclick = null;
+            }
+            
+            setTimeout(() => {   // wait for job-details.js to load data
+                const schemaEl = document.getElementById("jobSchema");
+                const schema = JSON.parse(schemaEl.textContent);
+        
+                // Populate schema fields from DOM
+                schema.title = document.getElementById("jobTitle")?.innerText || "";
+                schema.description = document.getElementById("jobDescription")?.innerText || "";
+                schema.employmentType = document.getElementById("jobType")?.innerText || "";
+                schema.hiringOrganization.name = document.getElementById("companyName")?.innerText || "";
+        
+                // Location
+                schema.jobLocation.address.addressLocality =
+                    document.getElementById("jobLocation")?.innerText.replace("📍 ", "") || "";
+        
+                // Date posted
+                schema.datePosted = document.getElementById("jobPosted")?.innerText.replace("📅 ", "") || "";
+        
+                // Salary (clean symbols)
+                schema.baseSalary.value.value =
+                    document.getElementById("salaryDisplay")?.innerText.replace(/[^0-9-]/g, "").split("-")[0]?.trim() || "";
+        
+                // Job expiry / deadline
+                const deadline = document.getElementById("sidebarDeadline")?.innerText || "";
+                schema.validThrough = deadline || schema.datePosted;
+        
+                // Replace original JSON-LD
+                schemaEl.textContent = JSON.stringify(schema, null, 2);
+            }, 700);
+        });
+    </script>
+
+</body>
+</html>

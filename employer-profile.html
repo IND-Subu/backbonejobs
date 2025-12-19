@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links"></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="employer-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>My Jobs</span>
+                </a>
+                <a href="post-job.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="applications-received.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="employer-profile.html" class="menu-item active">
+                    <span class="menu-icon">🏢</span>
+                    <span>Company Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Company Profile</h1>
+                    <p>Update your company information</p>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <form id="profileForm" class="auth-form">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Company Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" name="company_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPerson">Contact Person *</label>
+                        <input type="text" id="contactPerson" name="contact_person" required>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required readonly style="background: var(--surface);">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whatsapp">WhatsApp Number *</label>
+                        <input type="tel" id="whatsapp" name="whatsapp_number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Company Website</label>
+                        <input type="url" id="website" name="company_website" placeholder="https://www.example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Company Description</label>
+                        <textarea id="description" name="company_description" rows="4" placeholder="Brief description of your company..."></textarea>
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Address Details</h3>
+
+                    <div class="form-group">
+                        <label for="address">Company Address *</label>
+                        <textarea id="address" name="company_address" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <input type="text" id="state" name="state" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}">
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Additional Information</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="industry">Industry Type</label>
+                            <input type="text" id="industry" name="industry_type" placeholder="e.g., Real Estate, IT">
+                        </div>
+                        <div class="form-group">
+                            <label for="companySize">Company Size</label>
+                            <select id="companySize" name="company_size">
+                                <option value="">Select</option>
+                                <option value="1-10">1-10 employees</option>
+                                <option value="11-50">11-50 employees</option>
+                                <option value="51-200">51-200 employees</option>
+                                <option value="201-500">201-500 employees</option>
+                                <option value="500+">500+ employees</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gst">GST Number</label>
+                        <input type="text" id="gst" name="gst_number" placeholder="GST Number">
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-block">Save Changes</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/darkmode.js"></script>
+    <script src="js/checkauth.js"></script>
+    <script>
+        async function loadProfile() {
+            const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+            
+            // Fill form with existing data
+            Object.keys(userData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input && userData[key]) {
+                    input.value = userData[key];
+                }
+            });
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            try {
+                const response = await fetch(API_URL + 'employer/profile.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('user_data', JSON.stringify(result.employer));
+                    showToast('Profile updated successfully!', 'success');
+                } else {
+                    showToast(result.message || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('user_type') !== 'employer') {
+                window.location.href = 'employer-login.html';
+                return;
+            }
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

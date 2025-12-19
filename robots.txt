@@ -1,0 +1,46 @@
+# BackboneJobs Robots.txt
+
+User-agent: *
+
+# Allow all pages
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /api/
+Disallow: /admin/
+Disallow: /config.php
+Disallow: /vendor/
+Disallow: *.json$
+Disallow: /uploads/
+Disallow: /test-*.php
+
+# Allow specific API endpoints that should be indexed
+Allow: /api/jobs.php
+Allow: /sitemap*.xml
+Allow: /sitemap*.php
+
+# Crawl delay (optional - be nice to servers)
+# Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://www.backbonejobs.xyz/sitemapindex.xml
+Sitemap: https://www.backbonejobs.xyz/sitemap-static.xml
+Sitemap: https://www.backbonejobs.xyz/sitemap-generator.php
+
+# Specific bot configurations
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /uploads/logos/
+Disallow: /uploads/resumes/
+
+User-agent: bingbot
+Allow: /
+
+# Block bad bots (add as needed)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

@@ -91,6 +91,68 @@ body {
     color: var(--primary-color);
 }
 
+/* User Menu Dropdown */
+.user-menu {
+    position: relative;
+}
+
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all 0.3s;
+}
+
+.user-btn:hover {
+    background: var(--background);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 200px;
+    box-shadow: 0 8px 24px var(--shadow);
+    display: none;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* THIS IS THE CRITICAL CLASS */
+.user-dropdown.show {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.3s;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown a:hover {
+    background: var(--background);
+}
+
 .mobile-menu-btn {
     display: none;
     background: none;
@@ -523,6 +585,19 @@ body {
 @media (max-width: 768px) {
     .nav-links {
         display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    
+    .nav-links.mobile-active {
+        display: flex;
     }
     
     .mobile-menu-btn {
@@ -553,5 +628,15 @@ body {
     
     .footer-content {
         grid-template-columns: 1fr;
+    }
+    
+    .user-menu {
+        width: 100%;
+    }
+    
+    .user-dropdown {
+        position: relative;
+        width: 100%;
+        margin-top: 0.5rem;
     }
 }

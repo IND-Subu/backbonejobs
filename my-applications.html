@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuBtn">
+                        <span id="userName">User</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="profile.html">My Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-applications.html" class="menu-item active">
+                    <span class="menu-icon">📝</span>
+                    <span>My Applications</span>
+                </a>
+                <a href="saved-jobs.html" class="menu-item">
+                    <span class="menu-icon">❤️</span>
+                    <span>Saved Jobs</span>
+                </a>
+                <a href="job-alerts.html" class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <span>Job Alerts</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>My Applications</h1>
+                    <p>Track all your job applications</p>
+                </div>
+            </div>
+
+            <div class="filter-tabs" style="margin-bottom: 2rem;">
+                <button class="tab-btn active" onclick="filterApplications('all')">All</button>
+                <button class="tab-btn" onclick="filterApplications('Pending')">Pending</button>
+                <button class="tab-btn" onclick="filterApplications('Reviewed')">Reviewed</button>
+                <button class="tab-btn" onclick="filterApplications('Shortlisted')">Shortlisted</button>
+                <button class="tab-btn" onclick="filterApplications('Rejected')">Rejected</button>
+            </div>
+
+            <div class="dashboard-section">
+                <div id="applicationsContainer">
+                    <!-- Applications will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let allApplications = [];
+        let currentFilter = 'all';
+
+        async function loadApplications() {
+            try {
+                const response = await fetch(API_URL + 'applications.php', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    allApplications = data.applications;
+                    displayApplications();
+                } else {
+                    document.getElementById('applicationsContainer').innerHTML = `
+                        <p style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            No applications found
+                        </p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                showToast('Failed to load applications', 'error');
+            }
+        }
+
+        function filterApplications(status, event) {
+            currentFilter = status;
+            
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayApplications();
+        }
+
+        function displayApplications() {
+            const container = document.getElementById('applicationsContainer');
+            
+            let filtered = currentFilter === 'all' 
+                ? allApplications
+                : allApplications.filter(app => app.status === currentFilter);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <p style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        No ${currentFilter === 'all' ? '' : currentFilter.toLowerCase()} applications found
+                    </p>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filtered.map(app => `
+                                <tr>
+                                    <td><strong>${escapeHtml(app.job_title || '')}</strong></td>
+                                    <td>${escapeHtml(app.company_name || '')}</td>
+                                    <td>${escapeHtml(app.location || '')}</td>
+                                    <td>${new Date(app.applied_date).toLocaleDateString()}</td>
+                                    <td><span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="viewApplicationDetails(${app.id})">View</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function viewApplicationDetails(appId) {
+            window.location.href = `application-details.html?id=${appId}`;
+        }
+
+        // Load user info
+        const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+        if (userData.name && document.getElementById('userName')) {
+            document.getElementById('userName').textContent = userData.name.split(' ')[0];
+        }
+
+        // User menu toggle
+        document.getElementById('userMenuBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            document.getElementById('userDropdown')?.classList.remove('show');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadApplications();
+        });
+    </script>
+
+    <style>
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .tab-btn:hover {
+            background: var(--background);
+        }
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</body>
+</html>

@@ -53,7 +53,7 @@ function displayJobDetails(job) {
     document.getElementById('companyName').textContent = job.company_name;
     document.getElementById('jobLocation').innerHTML = `📍 ${escapeHtml(job.location)}`;
     document.getElementById('jobType').innerHTML = `💼 ${escapeHtml(job.job_type)}`;
-    document.getElementById('jobPosted').innerHTML = `📅 ${getTimeAgo(job.posted_date)}`;
+    document.getElementById('jobPosted').innerHTML = `📅 ${job.posted_date}`;
     
     // Job description
     document.getElementById('jobDescription').textContent = job.description;

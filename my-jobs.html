@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links"></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="employer-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-jobs.html" class="menu-item active">
+                    <span class="menu-icon">💼</span>
+                    <span>My Jobs</span>
+                </a>
+                <a href="post-job.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="applications-received.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="employer-profile.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Company Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>My Jobs</h1>
+                    <p>Manage all your job postings</p>
+                </div>
+                <a href="post-job.html" class="btn-primary">Post New Job</a>
+            </div>
+
+            <div class="filter-tabs" style="margin-bottom: 2rem;">
+                <button class="tab-btn active" onclick="filterJobs('all')">All</button>
+                <button class="tab-btn" onclick="filterJobs('Active')">Active</button>
+                <button class="tab-btn" onclick="filterJobs('Closed')">Closed</button>
+                <button class="tab-btn" onclick="filterJobs('Draft')">Draft</button>
+            </div>
+
+            <div class="dashboard-section">
+                <div id="jobsContainer" class="jobs-grid">
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <div class="spinner"></div>
+                        <p>Loading jobs...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/darkmode.js"></script>
+    <script src="js/checkauth.js"></script>
+    <script>
+        let allJobs = [];
+        let currentFilter = 'all';
+
+        async function loadJobs() {
+            const user = JSON.parse(localStorage.getItem("user_data"));
+            const employerId = user?.id;
+            
+            if (!employerId) {
+                console.error("Employer ID missing");
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_URL + 'jobs.php?limit=500', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    }
+                });
+                
+                const data = await response.json();
+                const container = document.getElementById('jobsContainer');
+                
+                if (data.success) {
+                    allJobs = data.jobs;
+                    displayJobs();
+                } else {
+                    container.innerHTML = '<p style="text-align: center; padding: 3rem; grid-column: 1/-1;">No jobs found</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('jobsContainer').innerHTML = '<p style="text-align: center; padding: 3rem; grid-column: 1/-1; color: var(--error);">Failed to load jobs</p>';
+            }
+        }
+
+        function filterJobs(status) {
+            currentFilter = status;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            displayJobs();
+        }
+
+        function displayJobs() {
+            const container = document.getElementById('jobsContainer');
+            let filtered = currentFilter === 'all' ? allJobs : allJobs.filter(j => j.status === currentFilter);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">💼</div>
+                        <h3>No ${currentFilter === 'all' ? '' : currentFilter} jobs</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Start by posting your first job</p>
+                        <a href="post-job.html" class="btn-primary">Post New Job</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(job => `
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3 class="job-title">${escapeHtml(job.title)}</h3>
+                            <p class="job-company">${escapeHtml(job.location)}</p>
+                        </div>
+                        <span class="status-badge status-${job.status.toLowerCase()}">${job.status}</span>
+                    </div>
+                    <div class="job-details">
+                        <div class="job-detail-item">
+                            <span>👁️</span>
+                            <span>${job.views || 0} views</span>
+                        </div>
+                        <div class="job-detail-item">
+                            <span>📨</span>
+                            <span>${job.application_count || 0} applications</span>
+                        </div>
+                        <div class="job-detail-item">
+                            <span>📅</span>
+                            <span>${getTimeAgo(job.posted_date)}</span>
+                        </div>
+                    </div>
+                    <div class="job-footer" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn-action" onclick="viewJob(${job.id})">View</button>
+                        <button class="btn-action" onclick="editJob(${job.id})" style="background: var(--secondary-color);">Edit</button>
+                        <button class="btn-action" onclick="toggleJobStatus(${job.id}, '${job.status}')" 
+                                style="background: ${job.status === 'Active' ? 'var(--warning)' : 'var(--success)'};">
+                            ${job.status === 'Active' ? 'Close' : 'Activate'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewJob(jobId) {
+            window.location.href = `job-details.php?id=${jobId}`;
+        }
+
+        function editJob(jobId) {
+            window.location.href = `edit-job.html?id=${jobId}`;
+        }
+
+        async function toggleJobStatus(jobId, currentStatus) {
+            const newStatus = currentStatus === 'Active' ? 'Closed' : 'Active';
+            
+            if (!confirm(`Are you sure you want to ${newStatus.toLowerCase()} this job?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_URL + 'jobs.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify({ id: jobId, status: newStatus })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(`Job ${newStatus.toLowerCase()} successfully`, 'success');
+                    loadJobs();
+                } else {
+                    showToast('Failed to update job status', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('user_type') !== 'employer') {
+                showToast('Access denied', 'error');
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+            loadJobs();
+        });
+    </script>
+
+    <style>
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .tab-btn:hover {
+            background: var(--background);
+        }
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</body>
+</html>

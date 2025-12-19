@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post New Job - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links"></div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="employer-dashboard.html" class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="my-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>My Jobs</span>
+                </a>
+                <a href="post-job.html" class="menu-item active">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="applications-received.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="employer-profile.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Company Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Post New Job</h1>
+                    <p>Fill in the details below to post a new job opening</p>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <form id="postJobForm" class="auth-form">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Job Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title *</label>
+                        <input type="text" id="jobTitle" name="title" required placeholder="e.g., Security Guard">
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category_id" required>
+                                <!-- Dynamically categories load here-->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jobType">Job Type *</label>
+                            <select id="jobType" name="job_type" required>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Temporary">Temporary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Job Description *</label>
+                        <textarea id="description" name="description" rows="5" required placeholder="Describe the job role and responsibilities..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements">Requirements</label>
+                        <textarea id="requirements" name="requirements" rows="4" placeholder="List the job requirements..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsibilities">Key Responsibilities</label>
+                        <textarea id="responsibilities" name="responsibilities" rows="4" placeholder="List the main responsibilities..."></textarea>
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Eligibility</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="experience">Experience Required *</label>
+                            <select id="experience" name="experience_required" required>
+                                <option value="Fresher">Fresher</option>
+                                <option value="Less than 1 year">Less than 1 year</option>
+                                <option value="1-2 years">1-2 years</option>
+                                <option value="3-5 years">3-5 years</option>
+                                <option value="5+ years">5+ years</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="education">Education Required</label>
+                            <select id="education" name="education_required">
+                                <option value="">Any</option>
+                                <option value="Below 10th">Below 10th</option>
+                                <option value="10th Pass">10th Pass</option>
+                                <option value="12th Pass">12th Pass</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Salary & Location</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="salaryMin">Minimum Salary (₹/month) *</label>
+                            <input type="number" id="salaryMin" name="salary_min" required min="5000" step="1000" placeholder="e.g., 15000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="salaryMax">Maximum Salary (₹/month) *</label>
+                            <input type="number" id="salaryMax" name="salary_max" required min="5000" step="1000" placeholder="e.g., 20000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="salaryNegotiable" name="salary_negotiable">
+                            <span>Salary is negotiable</span>
+                        </label>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="location">Location *</label>
+                            <input type="text" id="location" name="location" required placeholder="Area, City">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required placeholder="City">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">State *</label>
+                        <input type="text" id="state" name="state" required placeholder="State">
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Additional Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vacancies">Number of Vacancies *</label>
+                            <input type="number" id="vacancies" name="vacancies" required min="1" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="workTimings">Work Timings</label>
+                            <input type="text" id="workTimings" name="work_timings" placeholder="e.g., 9 AM - 6 PM">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="benefits">Benefits & Perks</label>
+                        <textarea id="benefits" name="benefits" rows="3" placeholder="e.g., PF, ESI, Medical Insurance, Meals"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deadline">Application Deadline</label>
+                        <input type="date" id="deadline" name="application_deadline">
+                    </div>
+
+                    <h3 style="color: var(--text-primary); margin: 1.5rem 0 1rem;">Contact Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="contactEmail">Contact Email</label>
+                            <input type="email" id="contactEmail" name="contact_email" placeholder="hr@company.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactPhone">Contact Phone</label>
+                            <input type="tel" id="contactPhone" name="contact_phone" placeholder="10-digit number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whatsapp">WhatsApp Number (for applications)</label>
+                        <input type="tel" id="whatsapp" name="whatsapp_number" placeholder="10-digit number">
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-block">Post Job</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/darkmode.js"></script>
+    <script src="js/checkauth.js"></script>
+    <script>
+    
+        let categories = [];
+        async function loadCategories() {
+            try {
+                // Load categories
+                const catResponse = await fetch(API_URL + 'admin/categories.php', {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('user_token')}
+                });
+                const catData = await catResponse.json();
+                
+                if (catData.success && catData.categories) {
+                    categories = catData.categories.filter(c => c.is_active == 1);
+                    const catSelect = document.getElementById('category');
+                    catSelect.innerHTML = '<option value="">-- Select Category --</option>' +
+                        categories.map(cat => 
+                            `<option value="${cat.id}">${escapeHtml(cat.category_name)}</option>`
+                        ).join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to load categories', 'error');
+            }
+        }
+        // Set minimum deadline to today
+        document.getElementById('deadline').min = new Date().toISOString().split('T')[0];
+
+        // Auto-fill contact details from company profile
+        const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+        if (userData.email) document.getElementById('contactEmail').value = userData.email;
+        if (userData.phone) document.getElementById('contactPhone').value = userData.phone;
+        if (userData.whatsapp_number) document.getElementById('whatsapp').value = userData.whatsapp_number;
+
+        document.getElementById('postJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (key === 'salary_negotiable') {
+                    data[key] = document.getElementById('salaryNegotiable').checked;
+                } else {
+                    data[key] = value;
+                }
+            });
+            
+            try {
+                const response = await fetch(API_URL + 'jobs.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Job posted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'my-jobs.html';
+                    }, 2000);
+                } else {
+                    showToast(result.message || 'Failed to post job', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+        });
+
+        // Check Privileged authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const allowed = ['employer', 'admin', 'Super Admin'];
+            const type = localStorage.getItem('user_type');
+        
+            if (!allowed.includes(type)) {
+                showToast('Access denied. Privileged login required.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+            
+            loadCategories();
+        });
+
+    </script>
+</body>
+</html>

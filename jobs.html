@@ -6,6 +6,30 @@
     <title>Browse Jobs - BackboneJobs</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/jobs.css">
+    
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Jobs - BackboneJobs",
+          "url": "https://www.backbonejobs.xyz/jobs.html",
+          "description": "Search for support staff, security guards, housekeeping and facility management jobs across India on BackboneJobs.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "BackboneJobs",
+            "url": "https://www.backbonejobs.xyz/"
+          },
+          "mainEntity": {
+            "@type": "SearchAction",
+            "target": "https://www.backbonejobs.xyz/jobs.html?title={title}&location={location}",
+            "query-input": [
+              "required name=title",
+              "optional name=location"
+            ]
+          }
+        }
+    </script>
+
 </head>
 <body>
     <!-- Navigation -->
@@ -17,11 +41,11 @@
                 </a>
             </div>
             <div class="nav-links">
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
                 <a href="jobs.html" class="active">Jobs</a>
                 <a href="about.html">About</a>
                 <a href="contact.html">Contact</a>
-                <a href="login.html">Login</a>
+                <a href="" id="userAuth"></a>
                 <button id="darkModeToggle" class="dark-toggle">🌙</button>
             </div>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -200,8 +224,8 @@
                 </div>
                 <div class="footer-section">
                     <h4>For Employers</h4>
-                    <a href="employer-register.html">Post a Job</a>
-                    <a href="employer-login.html">Employer Login</a>
+                    <a href="post-job.html">Post a Job</a>
+                    <a href="login.html">Employer Login</a>
                 </div>
                 <div class="footer-section">
                     <h4>Legal</h4>
@@ -215,6 +239,7 @@
         </div>
     </footer>
 
+    <script src="js/checkauth.js"></script>
     <script src="js/main.js"></script>
     <script src="js/jobs.js"></script>
 </body>

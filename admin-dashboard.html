@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BackboneJobs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: var(--primary-color);">
+                    <h2>🦴 BackboneJobs</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html" class="active">Admin Dashboard</a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuBtn">
+                        <span id="adminName">Admin</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="admin-profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+                <button id="darkModeToggle" class="dark-toggle">🌙</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item active">
+                    <span class="menu-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="admin-users.html" class="menu-item">
+                    <span class="menu-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="admin-employers.html" class="menu-item">
+                    <span class="menu-icon">🏢</span>
+                    <span>Manage Employers</span>
+                </a>
+                <a href="admin-jobs.html" class="menu-item">
+                    <span class="menu-icon">💼</span>
+                    <span>Manage Jobs</span>
+                </a>
+                    <a href="admin-job-posting.html" class="menu-item">
+                    <span class="menu-icon">➕</span>
+                    <span>Post New Job</span>
+                </a>
+                <a href="admin-categories.html" class="menu-item">
+                    <span class="menu-icon">🏷️</span>
+                    <span>Job Categories</span>
+                </a>
+                <a href="admin-applications.html" class="menu-item">
+                    <span class="menu-icon">📨</span>
+                    <span>Applications</span>
+                </a>
+                <a href="admin-feedback.html" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin-reports.html" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Reports</span>
+                </a>
+                <a href="api/admin/cron-dashboard.php" class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span>Cron Report</span>
+                </a>
+                <a href="admin-settings.html" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Welcome back, <span id="adminNameDisplay">Admin</span>!</h1>
+                    <p>Manage your job portal platform</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="refreshDashboard()" class="btn-secondary">🔄 Refresh</button>
+                    <button onclick="exportData()" class="btn-primary">📥 Export Data</button>
+                </div>
+            </div>
+
+            <!-- Platform Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #3b82f6;">👥</div>
+                    <div class="stat-content">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                        <small style="color: var(--success);">+<span id="newUsers">0</span> this week</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #10b981;">🏢</div>
+                    <div class="stat-content">
+                        <h3 id="totalEmployers">0</h3>
+                        <p>Total Employers</p>
+                        <small style="color: var(--success);">+<span id="newEmployers">0</span> this week</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f59e0b;">💼</div>
+                    <div class="stat-content">
+                        <h3 id="totalJobs">0</h3>
+                        <p>Active Jobs</p>
+                        <small style="color: var(--text-secondary);"><span id="inactiveJobs">0</span> inactive</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #8b5cf6;">📨</div>
+                    <div class="stat-content">
+                        <h3 id="totalApplications">0</h3>
+                        <p>Total Applications</p>
+                        <small style="color: var(--success);">+<span id="newApplications">0</span> today</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <div class="quick-action-card" onclick="window.location.href='admin-categories.html'">
+                        <span class="action-icon">🏷️</span>
+                        <h3>Add Category</h3>
+                        <p>Create new job category</p>
+                    </div>
+                    <div class="quick-action-card" onclick="window.location.href='admin-users.html'">
+                        <span class="action-icon">👤</span>
+                        <h3>Manage Users</h3>
+                        <p>View and manage users</p>
+                    </div>
+                    <div class="quick-action-card" onclick="showPendingApprovals()">
+                        <span class="action-icon">✅</span>
+                        <h3>Pending Approvals</h3>
+                        <p id="pendingCount">0 pending</p>
+                    </div>
+                    <div class="quick-action-card" onclick="window.location.href='admin-feedback.html'">
+                        <span class="action-icon">💬</span>
+                        <h3>View Feedback</h3>
+                        <p id="feedbackCount">0 unread</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Activities</h2>
+                    <a href="admin-activity-log.html" class="link">View All →</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Activity</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activitiesTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Feedback -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Feedback</h2>
+                    <a href="admin-feedback.html" class="link">View All →</a>
+                </div>
+                <div id="feedbackList" class="feedback-list">
+                    <!-- Feedback items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Platform Analytics -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Platform Analytics</h2>
+                    <select id="analyticsRange" onchange="loadAnalytics()" class="form-select">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+                <div class="chart-container" id="analyticsChart">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

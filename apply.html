@@ -83,6 +83,7 @@
                             <option value="Fresher">Fresher</option>
                             <option value="Less than 1 year">Less than 1 year</option>
                             <option value="1-2 years">1-2 years</option>
+                            <option value="2-3 years">2-3 years</option>
                             <option value="3-5 years">3-5 years</option>
                             <option value="5-10 years">5-10 years</option>
                             <option value="10+ years">10+ years</option>
@@ -230,7 +231,7 @@
                     // Check if already applied
                     if (data.job.has_applied) {
                         showToast('You have already applied for this job', 'error');
-                        setTimeout(() => window.location.href = `job-details.html?id=${jobId}`, 2000);
+                        setTimeout(() => window.location.href = `job-details.php?id=${jobId}`, 2000);
                     }
                 } else {
                     showToast('Job not found', 'error');
