@@ -1,0 +1,16 @@
+[15-Dec-2025 05:27:47 UTC] PHP Warning:  require_once(../../google-indexing-api.php): Failed to open stream: No such file or directory in /home2/backbone/public_html/api/admin/job-posting.php on line 8
+[15-Dec-2025 05:27:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../../google-indexing-api.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home2/backbone/public_html/api/admin/job-posting.php:8
+Stack trace:
+#0 {main}
+  thrown in /home2/backbone/public_html/api/admin/job-posting.php on line 8
+[15-Dec-2025 05:28:13 UTC] PHP Warning:  require_once(../../google-indexing-api.php): Failed to open stream: No such file or directory in /home2/backbone/public_html/api/admin/job-posting.php on line 8
+[15-Dec-2025 05:28:13 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../../google-indexing-api.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home2/backbone/public_html/api/admin/job-posting.php:8
+Stack trace:
+#0 {main}
+  thrown in /home2/backbone/public_html/api/admin/job-posting.php on line 8
+[15-Dec-2025 05:30:39 UTC] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in /home2/backbone/public_html/api/admin/job-posting.php:313
+Stack trace:
+#0 /home2/backbone/public_html/api/admin/job-posting.php(313): mysqli_stmt->bind_param('iisssssssssddss...', 3, 14, 'Assistant Accou...', 'Backbone Jobs', 'We need an Assi...', 'We need an Assi...', '', 'Full-Time', '1-3 years', '10th', 40000.0, 45000.0, 0, 'Gandhi Circle, ...', 'Bangalore', 'Karnataka', '9:00 Hrs To 5:0...', 'EPF, Insurance,...', 1, 'admin@backbonej...', '9113596553', '9113596553', '2026-01-31', 'Active', 0)
+#1 /home2/backbone/public_html/api/admin/job-posting.php(29): createJobForEmployer()
+#2 {main}
+  thrown in /home2/backbone/public_html/api/admin/job-posting.php on line 313
