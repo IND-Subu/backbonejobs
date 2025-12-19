@@ -39,13 +39,11 @@ async function loadJobs() {
             filteredJobs = [...allJobs];
             
             // Update total count
-            if (document.getElementById('totalJobsCount')) {
-                document.getElementById('totalJobsCount').textContent = allJobs.length;
-            }
+            document.getElementById('totalJobsCount').textContent = allJobs.length;
             
             applyFilters();
         } else {
-            showNoJobsState();
+            showNoResults();
         }
     } catch (error) {
         console.error('Error loading jobs:', error);
@@ -381,12 +379,6 @@ function showLoading() {
 // Show error state
 function showError() {
     const jobsGrid = document.getElementById('jobsGrid');
-    const loadingState = document.getElementById('loadingState');
-    const noResults = document.getElementById('noResults');
-    
-    loadingState.style.display = 'none';
-    noResults.style.display = 'none';
-    
     jobsGrid.style.display = 'block';
     jobsGrid.innerHTML = `
         <div style="text-align: center; padding: 3rem; color: var(--error);">
@@ -395,20 +387,5 @@ function showError() {
             <button class="btn-primary" onclick="loadJobs()">Retry</button>
         </div>
     `;
-}
-
-// Show no jobs state
-function showNoJobsState() {
-    const jobsGrid = document.getElementById('jobsGrid');
-    const loadingState = document.getElementById('loadingState');
-    const noResults = document.getElementById('noResults');
-    
-    loadingState.style.display = 'none';
-    jobsGrid.style.display = 'none';
-    noResults.style.display = 'block';
-}
-
-// Check if user is authenticated
-function checkAuth() {
-    return localStorage.getItem('user_token') !== null;
+    document.getElementById('loadingState').style.display = 'none';
 }
